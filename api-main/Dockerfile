@@ -31,7 +31,15 @@ RUN python manage.py collectstatic --noinput || true
 # Expose port
 EXPOSE 8000
 
-# Run migrations and start server
-CMD python manage.py migrate && \
-    python manage.py runserver 0.0.0.0:8000
+# Create startup script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Running migrations..."\n\
+python manage.py migrate || echo "Migration failed, continuing..."\n\
+echo "Starting server..."\n\
+exec python manage.py runserver 0.0.0.0:8000' > /app/start.sh && \
+    chmod +x /app/start.sh
+
+# Run startup script
+CMD ["/app/start.sh"]
 

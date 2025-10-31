@@ -33,13 +33,20 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy necessary files
+# Copy public files
 COPY --from=builder /app/public ./public
+
+# Copy standalone build if available, otherwise use regular build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Set the correct permission for prerender cache
-RUN mkdir -p .next && chown -R nextjs:nodejs .next
+# Copy node_modules if standalone build exists
+RUN if [ -d "/app/.next/standalone" ]; then \
+      cp -r /app/.next/standalone/node_modules ./node_modules 2>/dev/null || true; \
+    fi
+
+# Set the correct permission
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
@@ -48,6 +55,15 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# Use Next.js start command or fallback to next start
-CMD if [ -f server.js ]; then node server.js; else npm start; fi
+# Start command - try standalone first, fallback to npm start
+CMD if [ -f "server.js" ]; then \
+      echo "Starting with standalone server..." && \
+      node server.js; \
+    elif [ -f ".next/standalone/server.js" ]; then \
+      echo "Starting with standalone build..." && \
+      node .next/standalone/server.js; \
+    else \
+      echo "Starting with npm start..." && \
+      npm start; \
+    fi
 
