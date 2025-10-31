@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database (optional - for local dev, or use Render PostgreSQL)
+  # To use local postgres, run: docker-compose --profile local-db up
   postgres:
     image: postgres:17-alpine
     container_name: takethestage_postgres
@@ -31,7 +30,7 @@ services:
       - DB_NAME=${DB_NAME:-takethestage_db}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
-      - DB_HOST=${DB_HOST:-postgres}
+      - DB_HOST=${DB_HOST:-dpg-d41qvjqli9vc73fos9j0-a.oregon-postgres.render.com}
       - DB_PORT=${DB_PORT:-5432}
       - SECRET_KEY=${SECRET_KEY:-django-insecure-dev-key-change-in-production}
       - DEVELOPMENT_URL=${DEVELOPMENT_URL:-http://localhost:8000}
@@ -40,14 +39,10 @@ services:
       - ./api-main:/app
       - api_static:/app/staticfiles
       - api_media:/app/media
-    depends_on:
-      - postgres
     networks:
       - takethestage_network
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
+    # Remove depends_on since we're using Render PostgreSQL by default
+    # If using local postgres, add: depends_on: [postgres] and use profile
 
   # Next.js Frontend
   web:

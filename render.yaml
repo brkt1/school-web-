@@ -7,10 +7,9 @@ services:
     plan: free
     dockerfilePath: ./api-main/Dockerfile
     dockerContext: ./api-main
-    healthCheckPath: /api/health  # You may need to add this endpoint
     envVars:
       - key: DEBUG
-        value: False
+        value: "False"
       - key: SECRET_KEY
         generateValue: true
       - key: DB_NAME
@@ -34,27 +33,27 @@ services:
           name: take_the_stage
           property: port
       - key: DEVELOPMENT_URL
-        sync: false
+        value: "https://takethestage-api.onrender.com"
       - key: PRODUCTION_URL
-        sync: false
+        value: "https://takethestage-api.onrender.com"
       - key: FRONT_END_URL_DEV
-        sync: false
+        value: "https://takethestage-web.onrender.com"
       - key: FRONT_END_URL_PROD
-        sync: false
+        value: "https://takethestage-web.onrender.com"
       - key: CHAPA_SECRET_KEY
-        sync: false
+        value: ""
       - key: CHAPA_CALLBACK_URL
-        sync: false
+        value: "https://takethestage-api.onrender.com/chapa/callback"
       - key: CHAPA_SECRET
-        sync: false
+        value: ""
       - key: CHAPA_API_URL
-        sync: false
+        value: "https://api.chapa.co/v1"
       - key: HUNTER_IO_KEY
-        sync: false
+        value: ""
       - key: BREVO_API_KEY
-        sync: false
+        value: ""
       - key: WEB_GENERATOR_PATH
-        sync: false
+        value: "/opt/render/project/src/web-main"
 
   # Next.js Frontend
   - type: web

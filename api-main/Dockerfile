@@ -25,19 +25,21 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy project
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput || true
-
 # Expose port
 EXPOSE 8000
 
 # Create startup script
-RUN echo '#!/bin/bash\n\
+RUN printf '#!/bin/bash\n\
 set -e\n\
+echo "Waiting for database connection..."\n\
+# Wait for database to be ready (optional)\n\
+sleep 2\n\
+echo "Collecting static files..."\n\
+python manage.py collectstatic --noinput || echo "Static collection skipped"\n\
 echo "Running migrations..."\n\
-python manage.py migrate || echo "Migration failed, continuing..."\n\
-echo "Starting server..."\n\
-exec python manage.py runserver 0.0.0.0:8000' > /app/start.sh && \
+python manage.py migrate || echo "Migration error - check logs"\n\
+echo "Starting server on 0.0.0.0:8000..."\n\
+exec python manage.py runserver 0.0.0.0:8000\n' > /app/start.sh && \
     chmod +x /app/start.sh
 
 # Run startup script
