@@ -1,0 +1,118 @@
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+.testimonial {
+  .testimonial__container-fluid {
+    @include mixins.flex-center;
+    background: url('../../../../assets/testimonial/testimonial-bg.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: 50% 0;
+    padding: 10rem 0;
+
+    .testimonial__play-button {
+      @include mixins.flex-center;
+      position: relative;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 100%;
+      transition: 0.3s all ease-in-out;
+      cursor: pointer;
+
+      &:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 100%;
+        animation: pulse-border 1500ms ease-out infinite;
+      }
+
+      &:hover {
+        background-color: rgba(variables.$primary-color, 0.8);
+
+        .testimonial__play-icon {
+          color: white;
+        }
+      }
+
+      .testimonial__play-icon {
+        color: variables.$primary-color;
+        font-size: 3rem;
+        transition: 0.3s all ease-in-out;
+      }
+    }
+  }
+
+  .testimonial__container {
+    @include mixins.flex-center;
+    position: relative;
+    // top: -5rem;
+    padding: 0;
+    overflow: initial;
+
+    .testimonial__carousel {
+      width: 100vw;
+      max-width: 800px;
+      background-color: white;
+      box-shadow: variables.$card-shadow;
+      padding: 2rem 2rem 0 2rem;
+
+      .slick-dots li button {
+        background: black !important;
+      } 
+      
+      .slick-dots li.slick-active button {
+        background: variables.$primary-color !important;
+      }
+
+      .carousel__item {
+        min-height: 20rem;
+        text-align: center;
+        margin-bottom: 2rem;
+
+        .carousel__item-comment,
+        .carousel__item-commenter {
+          @include mixins.text;
+          font-style: italic;
+          font-size: 1.4rem;
+        }
+
+        .carousel__item-commenter {
+          font-size: 1.2rem;
+
+          .commenter__name {
+            color: black;
+            font-style: normal;
+          }
+        }
+
+        .carousel__item-avatar {
+          display: inline-block;
+          width: 120px;
+          height: 120px;
+          border-radius: 100%;
+        }
+      }
+    }
+  }
+
+  @keyframes pulse-border {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+}
+
+.testimonial__modal {
+  .ant-modal-body {
+    padding: 0 !important;
+  }
+}

@@ -1,0 +1,18 @@
+.ant-upload-list-item-container,
+.ant-upload.ant-upload-select {
+    width: 600px !important;
+    height: 400px !important;
+}
+
+.ant-upload-list-item-container + .ant-upload.ant-upload-select{
+    display: none;
+}
+
+.ant-upload-list.ant-upload-list-picture-card{
+    display: flex;
+    justify-content: center;
+}
+
+.ck-editor__editable {
+    min-height: 500px;
+}

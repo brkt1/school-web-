@@ -1,0 +1,24 @@
+@use "../../styles/main.scss";
+
+.app-button {
+  width: 8rem !important;
+  height: auto !important;
+  padding: 0.6rem 0 !important;
+  border-radius: 4px !important;
+
+  font-weight: bold !important;
+  text-transform: uppercase;
+
+  box-shadow: 0 8px 9px 0 rgba(96,94,94,.17) !important;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+@media only screen and (min-width: 576px) {
+  .app-button {
+    width: 10rem !important;
+    padding: 0.8rem 0 !important;
+  }
+}

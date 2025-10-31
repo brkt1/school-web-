@@ -1,0 +1,32 @@
+@use '../../../styles/variables.scss';
+@use "../../../styles/main.scss";
+@use "../../../styles/mixins.scss";
+
+.price-card {
+  @include mixins.card;
+
+  &:hover {
+    border: 1px solid variables.$primary-color !important;
+  }
+
+  .price-card__title {
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 1rem auto;
+  }
+
+  .price-card__price {
+    color: variables.$primary-color;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .price-card__feature {
+    @include mixins.text;
+  }
+
+  .price-card__button {
+    margin: 1rem auto;
+  }
+}

@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+// Updated Color Scheme
+$primary-color: hsl(217.05deg 86.13% 33.92%); // A strong blue matching the logo
+$secondary-color: #4A90E2; // Lighter complementary blue
+$gradient-bg: linear-gradient(to right, $primary-color 30%, $secondary-color 100%);
+$card-shadow: 0 4px 30px rgba(0, 98, 255, 0.15);
+
+// Text and Background Colors
+$font-color: #2c3e50; // A darker, clean text color
+$footer-color: #0A1733; // Deep navy for footer
+
+// Borders
+$border: 1px solid rgba(0, 98, 255, 0.2);
+
+// Typography
+$primary-font: 'Poppins', sans-serif;
+
+// Sizes
+$header-size: 80px;

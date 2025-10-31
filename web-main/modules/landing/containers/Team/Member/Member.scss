@@ -1,0 +1,42 @@
+@use '../../../styles/variables.scss';
+@use "../../../styles/main.scss";
+@use "../../../styles/mixins.scss";
+
+.member {
+  @include mixins.card;
+
+  .ant-card-body {
+    position: relative;
+
+    .member__contact {
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+
+      .member__contact-link {
+        @include mixins.flex-center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 100%;
+        border: variables.$border;
+        font-size: 1.2rem;
+        transition: 0.3s all ease-in-out;
+        background-color: white;
+
+        &:hover {
+          background-color: variables.$primary-color;
+          color: white;
+        }
+      }
+    }
+
+    .ant-card-meta-title {
+      margin-bottom: 0;
+    }
+
+    .ant-card-meta-description {
+      font-size: 0.8rem;
+    }
+  }
+}

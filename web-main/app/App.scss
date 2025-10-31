@@ -1,0 +1,16 @@
+// In SCSS, importing from node_modules works similarly but without the ~
+// Also, for antd you typically import CSS/SCSS directly or configure your build differently
+@use '../modules/landing/styles/main.scss';
+@use '../modules/landing/styles/variables.scss';
+
+html {
+  scroll-behavior: smooth;
+}
+
+main {
+  background: white;
+}
+
+body {
+  font-family: variables.$primary-font;  // Note: LESS variables (@var) become SCSS variables ($var)
+}

@@ -1,0 +1,60 @@
+@use "../../../styles/main.scss";
+@use '../../../styles/variables.scss';
+@use '../../../styles/mixins.scss';
+
+.post {
+  @include mixins.card;
+  text-align: left;
+
+  .ant-card-meta-description {
+    font-size: 0.9rem;
+  }
+
+  .post__time-read {
+    color: variables.$primary-color;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .post__info {
+    @include mixins.flex-center;
+    justify-content: space-between;
+
+    color: variables.$font-color;
+    padding: 0.75rem 1.5rem;
+
+    .anticon {
+      color: variables.$primary-color;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  }
+
+.post__social-inside {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  padding: 0.75rem 1.5rem;
+
+  a {
+    font-size: 1.5rem; // Increased size
+    color: variables.$font-color;
+    transition: color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+
+    &:hover {
+      color: variables.$primary-color;
+      transform: scale(1.15); // Subtle grow on hover
+    }
+
+    .anticon {
+      font-weight: bold; // Try to make icon strokes bolder
+      stroke-width: 2;    // If SVG supports it
+    }
+  }
+}
+}

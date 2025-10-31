@@ -1,0 +1,16 @@
+{% comment %} <-- django_project/users/templates/template_activate_account.html --> {% endcomment %}
+{% comment %} {% autoescape off %}
+Hi {{ user.username }},
+
+Please click on the link below to confirm your email:
+ {% comment %} {% url 'account_confirm_email' key=key %} {% endcomment %}
+ {% comment %} https://geez-elearning.herokuapp.com/activate/{% url 'account_confirm_email' key=key %}
+{% endautoescape %} {% endcomment %} 
+
+{% comment %} {% extends "account/email/base_message.txt" %} {% endcomment %}
+{% load account %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% user_display user as user_display %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}You're receiving this e-mail because user {{ user_display }} has given your e-mail address to register an account on {{ URL_FRONT }}.
+
+To confirm this is correct, go to {{ activate_url }}{% endblocktrans %}{% endautoescape %}{% endblock %}

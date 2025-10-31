@@ -1,0 +1,42 @@
+.custom-container {
+  width: 100%;
+  padding: 7rem 15px;
+  margin-right: auto;
+  margin-left: auto;
+  overflow: hidden;
+}
+
+.custom-container--fluid {
+  max-width: none !important;
+}
+
+/* Mobile view: half the padding */
+@media (max-width: 767px) {
+  .custom-container {
+    padding: 1.5rem 7.5px; /* half of 7rem and 15px */
+  }
+}
+
+@media only screen and (min-width: 576px) {
+  .custom-container, .container {
+    max-width: 540px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .custom-container, .container {
+    max-width: 720px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .custom-container, .container {
+    max-width: 960px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .custom-container, .container {
+    max-width: 1140px;
+  }
+}

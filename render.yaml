@@ -1,0 +1,82 @@
+services:
+  # Django Backend API
+  - type: web
+    name: takethestage-api
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./api-main/Dockerfile
+    dockerContext: ./api-main
+    healthCheckPath: /api/health  # You may need to add this endpoint
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_NAME
+        fromDatabase:
+          name: take_the_stage
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: take_the_stage
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: take_the_stage
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: take_the_stage
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: take_the_stage
+          property: port
+      - key: DEVELOPMENT_URL
+        sync: false
+      - key: PRODUCTION_URL
+        sync: false
+      - key: FRONT_END_URL_DEV
+        sync: false
+      - key: FRONT_END_URL_PROD
+        sync: false
+      - key: CHAPA_SECRET_KEY
+        sync: false
+      - key: CHAPA_CALLBACK_URL
+        sync: false
+      - key: CHAPA_SECRET
+        sync: false
+      - key: CHAPA_API_URL
+        sync: false
+      - key: HUNTER_IO_KEY
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: WEB_GENERATOR_PATH
+        sync: false
+
+  # Next.js Frontend
+  - type: web
+    name: takethestage-web
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./web-main/Dockerfile
+    dockerContext: ./web-main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: takethestage-api
+          property: host
+
+databases:
+  - name: take_the_stage
+    databaseName: take_the_stage
+    user: take_the_stage
+    plan: free
+    region: oregon
+

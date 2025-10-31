@@ -1,0 +1,25 @@
+@use "../../styles/main.scss";
+@use '../../styles/variables.scss';
+
+.business-plan {
+  .business-plan__container {
+    padding-top: 0;
+  }
+
+  .business-plan__title {
+    @include heading;
+    text-align: left;
+    line-height: 2.5rem;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .business-plan__desc {
+    @include text;
+    text-align: left;
+  }
+
+  .business-plan__img {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+}

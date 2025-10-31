@@ -1,0 +1,26 @@
+@use '../../styles/variables.scss';
+@use "../../styles/main.scss";
+@use "../../styles/mixins.scss";
+
+.contact {
+  .contact__form {
+    input.ant-input,
+    textarea.ant-input {
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+
+      &:focus {
+        background-color: rgba(variables.$primary-color, 0.05);
+      }
+    }
+  }
+
+  .contact__img {
+    @include mixins.flex-center;
+
+    img {
+      max-width: 350px;
+      width: 100%;
+    }
+  }
+}

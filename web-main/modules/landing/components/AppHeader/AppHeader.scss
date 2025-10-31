@@ -1,0 +1,120 @@
+@use "../../styles/main.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+.app-header {
+  @include mixins.flex-center;
+  padding: 0 !important;
+  height: variables.$header-size !important;
+  background: variables.$gradient-bg !important;
+  z-index: 99;
+
+  .app-header__content {
+    @include mixins.flex-center;
+    justify-content: space-between;
+    padding: 0 15px;
+
+    .app-header__logo {
+      height: 60px;
+    }
+
+    .app-header__menu {
+      width: auto;
+      margin-left: auto;
+      color: white;
+      font-size: medium;
+      font-weight: bold;
+      background: transparent;
+      border-bottom: none;
+      line-height: 45px;
+      text-align: right;
+
+      .app-header__menu-icon {
+        font-size: 1.5rem;
+        transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        margin: auto;
+
+        &:hover {
+          color: variables.$primary-color !important;
+        }
+      }
+
+      .ant-menu-item {
+        .app-header__menu-item {
+          color: white;
+        }
+      }
+
+      .ant-menu-item-selected {
+        .app-header__menu-item {
+          color: #3ecf8e;
+        }
+      }
+    }
+
+    .app-header__menu-button {
+      color: white;
+      font-size: 1.8rem;
+      display: none; // hidden by default (desktop)
+      background: none;
+      border: none;
+
+      &:hover {
+        color: variables.$primary-color;
+      }
+    }
+  }
+}
+
+// Drawer overrides
+.ant-drawer-header {
+  background: variables.$gradient-bg;
+  color: white;
+}
+.ant-drawer-title {
+  font-weight: bold;
+}
+.ant-drawer-body {
+  padding: 0;
+
+  .ant-menu {
+    border-right: none;
+    font-size: 16px;
+    background: white;
+  }
+
+  .ant-menu-item {
+    padding-left: 20px;
+
+    .app-header__menu-item {
+      color: black;
+
+      &:hover {
+        color: variables.$primary-color;
+      }
+    }
+
+    &.ant-menu-item-selected {
+      .app-header__menu-item {
+        color: variables.$primary-color;
+      }
+    }
+  }
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .app-header {
+    .app-header__content {
+      .app-header__menu {
+        display: none; // hide full menu on mobile
+      }
+
+      .app-header__menu-button {
+        display: flex; // show hamburger icon
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

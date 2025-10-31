@@ -1,0 +1,16 @@
+@use '../../styles/variables.scss';
+@use "../../styles/main.scss";
+@use "../../styles/mixins.scss";
+
+.section-heading {
+  @include mixins.flex-center;
+  flex-direction: column;
+
+  .section-heading__main {
+    @include mixins.heading;
+  }
+
+  .section-heading__sub {
+    @include mixins.sub-heading;
+  }
+}

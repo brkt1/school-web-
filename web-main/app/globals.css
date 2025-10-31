@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8faff; /* light blueish background for modern feel */
+  --foreground: #0A1733; /* dark navy text matching footer & logo */
+  --primary: #0062FF;     /* primary blue from the new logo */
+  --secondary: #4A90E2;   /* lighter complementary blue */
+  --accent: #E6F0FF;      /* very light blue for highlights */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans, 'Poppins', sans-serif);
+  --font-mono: var(--font-geist-mono, monospace);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.ck-media__wrapper {
+  min-width: 500px;
+}
+
+.ant-layout-header{
+  color: rgb(204 208 212) !important;
+}
+
+.ant-layout-footer{
+  color: #f5f5f5!important;
+  background-color: rgba(0, 0, 0, 0.88) !important;
+
+}
+
+.ant-upload.ant-upload-select,
+.ant-picker.ant-picker-outlined {
+  width: 100%;
+}

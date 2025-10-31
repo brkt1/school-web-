@@ -1,0 +1,18 @@
+@use "sass:color";
+@use '../../styles/variables.scss';
+@use "../../styles/main.scss";
+@use "../../styles/mixins.scss";
+
+.app-icon {
+  @include mixins.flex-center;
+  display: inline-flex !important;
+  background-color: color.adjust(variables.$primary-color, $lightness: 38%) !important;
+  color: variables.$primary-color !important;
+  border: 1px solid #3ecf8e;
+  width: 100px !important;
+  height: 100px !important;
+
+  .anticon {
+    font-size: 2.5rem;
+  }
+}

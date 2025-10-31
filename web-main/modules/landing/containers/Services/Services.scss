@@ -1,0 +1,11 @@
+@use "../../styles/main.scss";
+
+.services {
+  background-color: #F9F9F9;
+
+  .services__content {
+    .ant-card-body {
+      padding: 0 !important;
+    }
+  }
+}

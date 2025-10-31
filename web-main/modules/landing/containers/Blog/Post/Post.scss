@@ -1,0 +1,35 @@
+@use "../../../styles/main.scss";
+@use '../../../styles/variables.scss';
+@use '../../../styles/mixins.scss';
+
+.post {
+  @include mixins.card;
+  text-align: left;
+
+  .ant-card-meta-description {
+    font-size: 0.9rem;
+  }
+
+  .post__time-read {
+    color: variables.$primary-color;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .post__info {
+    @include mixins.flex-center;
+    justify-content: space-between;
+
+    color: variables.$font-color;
+    padding: 0.75rem 1.5rem;
+
+    .anticon {
+      color: variables.$primary-color;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  }
+}

@@ -1,0 +1,73 @@
+@use "../../styles/main.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+.home {
+  position: relative;
+  background: variables.$gradient-bg;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    border-top: 15vw solid transparent;
+    border-right: 100vw solid white;
+    pointer-events: none;
+  }
+
+  .home__container {
+    padding-top: 5rem;
+
+    .home__intro {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .intro__heading {
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        text-transform: capitalize;
+      }
+
+      .intro__sub-heading {
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .intro__button-group {
+        margin-top: 1.5rem;
+      }
+    }
+
+    .home__img-wrapper {
+      @include mixins.flex-center;
+
+      .home__img {
+        width: 100%;
+        height: auto;
+        margin: 2.5rem auto 2rem auto;
+        z-index: 2;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .home {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 5%;
+      bottom: 0;
+
+      width: 30vw;
+      height: 15vh;
+      background: variables.$gradient-bg;
+      transform: skewY(-10deg);
+    }
+  }
+}

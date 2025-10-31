@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (optional - for local dev, or use Render PostgreSQL)
+  postgres:
+    image: postgres:17-alpine
+    container_name: takethestage_postgres
+    environment:
+      POSTGRES_DB: takethestage_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - takethestage_network
+    profiles:
+      - local-db  # Only start if explicitly using local database
+
+  # Django Backend API
+  api:
+    build:
+      context: ./api-main
+      dockerfile: Dockerfile
+    container_name: takethestage_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DB_NAME=${DB_NAME:-takethestage_db}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-dev-key-change-in-production}
+      - DEVELOPMENT_URL=${DEVELOPMENT_URL:-http://localhost:8000}
+      - FRONT_END_URL_DEV=${FRONT_END_URL_DEV:-http://localhost:3000}
+    volumes:
+      - ./api-main:/app
+      - api_static:/app/staticfiles
+      - api_media:/app/media
+    depends_on:
+      - postgres
+    networks:
+      - takethestage_network
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  # Next.js Frontend
+  web:
+    build:
+      context: ./web-main
+      dockerfile: Dockerfile
+    container_name: takethestage_web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
+    networks:
+      - takethestage_network
+
+networks:
+  takethestage_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  api_static:
+  api_media:
+

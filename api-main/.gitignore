@@ -1,0 +1,16 @@
+db.sqlite3
+
+.venv/
+.env
+.password
+target/
+runserver.sh
+run.sh
+media/
+createsuperuser.sh
+migrations/
+__pycache__/
+venv/   
+makemigration.sh
+.history
+django_errors.log

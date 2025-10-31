@@ -1,0 +1,60 @@
+@use "sass:color";
+@use "../../styles/main.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+.app-footer {
+  background-color: variables.$footer-color !important;
+  padding: 0 !important;
+
+  .app-footer__content {
+    padding-bottom: 5rem;
+
+    .app-footer__logo {
+      @include mixins.flex-center;
+      justify-content: flex-start;
+    }
+
+    .app-footer__subscribe {
+      .app-footer__subscribe-title {
+        color: white;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+      }
+
+      .app-footer__subscribe-text {
+        color: white;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .app-footer__subscribe-input {
+        .ant-input {
+          padding: 0.5rem;
+          color: white;
+          font-style: italic;
+          background-color: color.adjust(variables.$footer-color, $lightness: 10%);
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+          border-right: 0;
+        }
+
+        .ant-input-group-addon {
+          color: white;
+          border-color: variables.$primary-color;
+          background-color: variables.$primary-color;
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+        }
+      }
+    }
+  }
+
+  .app-footer__copyright {
+    color: white;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 1.5rem 0;
+    border-top: 1px solid color.adjust(variables.$footer-color, $lightness: 20%);
+  }
+}

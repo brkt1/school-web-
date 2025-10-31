@@ -1,0 +1,26 @@
+@use "../../../styles/main.scss";
+@use '../../../styles/variables.scss';
+@use '../../../styles/mixins.scss';
+
+.about__card {
+  @include mixins.card;
+  padding: 1rem !important;
+
+  &:hover {
+    border: 1px solid variables.$primary-color !important;
+  }
+
+  .ant-card-cover {
+    padding-top: 2.5rem;
+
+    .about__card-icon {
+      border: none;
+    }
+  }
+
+  .ant-card-body {
+    .ant-card-meta-description {
+      margin-bottom: 2rem;
+    }
+  }
+}

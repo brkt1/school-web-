@@ -1,0 +1,66 @@
+// In _mixins.scss (assuming this is your mixins file)
+@use "sass:color";
+@use "variables" as vars; // Changed to underscore, added explicit alias for clarity
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+
+  @media only screen and (min-width: 576px) {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@mixin sub-heading {
+  color: vars.$font-color;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 600px;
+
+  @media only screen and (min-width: 576px) {
+    font-size: 1.2rem;
+  }
+}
+
+@mixin text {
+  font-size: 1rem;
+  color: vars.$font-color;
+}
+
+@mixin icon {
+  @include flex-center;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  // Changed to color.lighten for clearer intent and to avoid deprecation
+  background-color: color.lighten(vars.$primary-color, 35%);
+
+  font-size: 2.5rem;
+  color: vars.$primary-color;
+}
+
+@mixin card {
+  padding: 2rem 0.5rem;
+  text-align: center;
+  border: vars.$border; // Removed !important unless strictly necessary
+  transition: 0.5s all ease-in-out;
+
+  .ant-card-meta-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .ant-card-meta-description {
+    @include text;
+  }
+}
