@@ -1,10 +1,11 @@
 'use client';
+import { Tabs } from "antd";
 import React, { useState } from "react";
-import { Button, Tabs } from "antd";
-import StudentRegisteration from "../StudentRegisteration/StudentRegisteration";
-import TeacherRegisteration from "../TeacherRegisteration/TeacherRegisteration";
 import { Container } from "../../components/Container/Container";
 import { SectionHeading } from "../../components/SectionHeading/SectionHeading";
+import StudentRegisteration from "../StudentRegisteration/StudentRegisteration";
+import TeacherRegisteration from "../TeacherRegisteration/TeacherRegisteration";
+import "./Registeration.scss";
 
 const Registeration: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string | null>(null);
@@ -27,71 +28,47 @@ const Registeration: React.FC = () => {
 
         {activeKey === null ? (
           // Selection screen
-          <div className="flex justify-center gap-6 mt-10">
-            <Button
-              type="primary"
-              size="large"
-              className="bg-primary hover:bg-primary"
+          <div className="selection-buttons">
+            <button
+              className="selection-button"
               onClick={() => handleSelection("student_registeration")}
             >
-              Student Registeration
-            </Button>
-            <Button
-              type="primary"
-              size="large"
-              className="bg-primary hover:bg-primary"
+              Student Registration
+            </button>
+            <button
+              className="selection-button"
               onClick={() => handleSelection("teacher_registeration")}
             >
-             Teacher Registeration
-            </Button>
+              Teacher Registration
+            </button>
           </div>
         ) : (
           // Registration form with back button
-          <div className="mt-10">
-            <Button
+          <div className="form-container">
+            <button
               onClick={goBack}
-              className="mb-6 text-parimary border-parimary hover:bg-orange-50"
+              className="back-button"
             >
               ← Go Back
-            </Button>
-            <Tabs
-              className="w-full max-w-6xl bg-white p-6 rounded-2xl shadow-lg"
-              activeKey={activeKey}
-              onChange={(key) => setActiveKey(key)}
-              type="card"
-              items={[
-                {
-                  key: "student_registeration",
-                  label: (
-                    <span
-                      className={`text-lg font-bold text-center px-4 py-2 transition-all ${
-                        activeKey === "student_registeration"
-                          ? "text-white bg-primary rounded-md"
-                          : "text-primary"
-                      }`}
-                    >
-                      Student Registration
-                    </span>
-                  ),
-                  children: <StudentRegisteration />,
-                },
-                {
-                  key: "teacher_registeration",
-                  label: (
-                    <span
-                      className={`text-lg font-bold text-center px-4 py-2 transition-all ${
-                        activeKey === "teacher_registeration"
-                          ? "text-white bg-primary rounded-md"
-                          : "text-bg-primary"
-                      }`}
-                    >
-                      Teacher Registration
-                    </span>
-                  ),
-                  children: <TeacherRegisteration />,
-                },
-              ]}
-            />
+            </button>
+            <div className="tabs-container">
+              <Tabs
+                activeKey={activeKey}
+                onChange={(key) => setActiveKey(key)}
+                items={[
+                  {
+                    key: "student_registeration",
+                    label: "Student Registration",
+                    children: <StudentRegisteration />,
+                  },
+                  {
+                    key: "teacher_registeration",
+                    label: "Teacher Registration",
+                    children: <TeacherRegisteration />,
+                  },
+                ]}
+              />
+            </div>
           </div>
         )}
       </Container>

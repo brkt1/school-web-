@@ -1,24 +1,74 @@
-@use "../../styles/main.scss";
+@use "../../styles/variables.scss" as variables;
 
 .app-button {
-  width: 8rem !important;
+  min-width: 8rem !important;
   height: auto !important;
-  padding: 0.6rem 0 !important;
-  border-radius: 4px !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: variables.$radius-lg !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  font-size: 0.95rem !important;
+  border: none !important;
+  background: variables.$gradient-blue !important;
+  color: white !important;
+  box-shadow: variables.$shadow-md !important;
+  transition: all variables.$transition-base !important;
+  position: relative;
+  overflow: hidden;
 
-  font-weight: bold !important;
-  text-transform: uppercase;
-
-  box-shadow: 0 8px 9px 0 rgba(96,94,94,.17) !important;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
 
   &:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px) !important;
+    box-shadow: variables.$shadow-xl !important;
+    background: variables.$gradient-purple !important;
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+    box-shadow: variables.$shadow-md !important;
+  }
+
+  // Primary variant
+  &.ant-btn-primary {
+    background: variables.$gradient-blue !important;
+    
+    &:hover {
+      background: variables.$gradient-purple !important;
+    }
+  }
+
+  // Default variant
+  &.ant-btn-default {
+    background: white !important;
+    color: variables.$primary-color !important;
+    border: 2px solid variables.$primary-color !important;
+
+    &:hover {
+      background: variables.$primary-color !important;
+      color: white !important;
+      border-color: variables.$primary-color !important;
+    }
   }
 }
 
 @media only screen and (min-width: 576px) {
   .app-button {
-    width: 10rem !important;
-    padding: 0.8rem 0 !important;
+    min-width: 10rem !important;
+    padding: 0.875rem 2rem !important;
+    font-size: 1rem !important;
   }
 }

@@ -1,5 +1,51 @@
-@use "../../styles/main.scss";
+@use '../../styles/variables.scss' as variables;
+@use '../../styles/mixins.scss' as mixins;
 
 .blog {
-  background-color: #F9F9F9;
+  position: relative;
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+  overflow: hidden;
+
+  // Animated background elements
+  &::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 18s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 10%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 14s ease-in-out infinite reverse;
+    z-index: 0;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(25px, -25px) scale(1.1);
+    }
+  }
+
+  // Ant Design row styling
+  .ant-row {
+    position: relative;
+    z-index: 1;
+  }
 }

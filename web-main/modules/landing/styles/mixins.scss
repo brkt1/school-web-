@@ -1,6 +1,6 @@
-// In _mixins.scss (assuming this is your mixins file)
+// Modern mixins for consistent design
 @use "sass:color";
-@use "variables" as vars; // Changed to underscore, added explicit alias for clarity
+@use "variables" as vars;
 
 @mixin flex-center {
   display: flex;
@@ -9,23 +9,34 @@
 }
 
 @mixin heading {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 800;
   text-align: center;
   margin-bottom: 1rem;
+  color: vars.$font-color;
+  font-family: vars.$heading-font;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 
   @media only screen and (min-width: 576px) {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media only screen and (min-width: 992px) {
+    font-size: 3rem;
   }
 }
 
 @mixin sub-heading {
-  color: vars.$font-color;
-  font-size: 1.2rem;
+  color: vars.$font-color-light;
+  font-size: 1.1rem;
   text-align: center;
   margin-bottom: 3rem;
-  max-width: 600px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
 
   @media only screen and (min-width: 576px) {
     font-size: 1.2rem;
@@ -35,32 +46,63 @@
 @mixin text {
   font-size: 1rem;
   color: vars.$font-color;
+  line-height: 1.6;
 }
 
 @mixin icon {
   @include flex-center;
   width: 100px;
   height: 100px;
-  border-radius: 100%;
-  // Changed to color.lighten for clearer intent and to avoid deprecation
-  background-color: color.lighten(vars.$primary-color, 35%);
-
+  border-radius: vars.$radius-full;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
   font-size: 2.5rem;
   color: vars.$primary-color;
+  transition: all vars.$transition-base;
+
+  &:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  }
 }
 
 @mixin card {
-  padding: 2rem 0.5rem;
+  padding: 2rem 1.5rem;
   text-align: center;
-  border: vars.$border; // Removed !important unless strictly necessary
-  transition: 0.5s all ease-in-out;
+  border: vars.$border-light;
+  border-radius: vars.$radius-xl;
+  background: white;
+  box-shadow: vars.$card-shadow;
+  transition: all vars.$transition-base;
+
+  &:hover {
+    box-shadow: vars.$card-shadow-hover;
+    transform: translateY(-4px);
+  }
 
   .ant-card-meta-title {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: vars.$font-color;
+    font-family: vars.$heading-font;
+    margin-bottom: 0.5rem;
   }
 
   .ant-card-meta-description {
     @include text;
+    color: vars.$font-color-light;
   }
+}
+
+@mixin gradient-text {
+  background: vars.$gradient-blue;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }

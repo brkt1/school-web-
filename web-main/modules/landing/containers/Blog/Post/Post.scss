@@ -3,33 +3,181 @@
 @use '../../../styles/mixins.scss';
 
 .post {
-  @include mixins.card;
+  border-radius: variables.$radius-2xl !important;
+  border: 2px solid transparent !important;
+  background: white !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(59, 130, 246, 0.1) !important;
+  transition: all variables.$transition-base !important;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   text-align: left;
 
+  // Gradient border on hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: variables.$radius-2xl;
+    padding: 2px;
+    background: variables.$gradient-blue;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity variables.$transition-base;
+    z-index: 0;
+  }
+
+  // Image overlay effect
+  .ant-card-cover {
+    position: relative;
+    overflow: hidden;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+      opacity: 0;
+      transition: opacity variables.$transition-base;
+      z-index: 1;
+    }
+
+    img {
+      transition: transform variables.$transition-slow;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15), 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+
+    &::before {
+      opacity: 1;
+    }
+
+    .ant-card-cover {
+      &::after {
+        opacity: 1;
+      }
+
+      img {
+        transform: scale(1.1);
+      }
+    }
+
+    .post__time-read {
+      background: variables.$gradient-blue;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .ant-card-body {
+    padding: 2rem !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ant-card-meta-title {
+    font-size: 1.375rem !important;
+    font-weight: 800 !important;
+    color: variables.$font-color !important;
+    font-family: variables.$heading-font !important;
+    margin-bottom: 0.75rem !important;
+    line-height: 1.4 !important;
+    transition: color variables.$transition-base;
+
+    &:hover {
+      color: variables.$primary-color !important;
+    }
+  }
+
   .ant-card-meta-description {
-    font-size: 0.9rem;
+    font-size: 1rem !important;
+    color: variables.$font-color-light !important;
+    line-height: 1.7 !important;
+    margin-bottom: 1rem !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .post__time-read {
     color: variables.$primary-color;
-    font-size: 0.9rem;
-    font-weight: bold;
+    font-size: 0.875rem;
+    font-weight: 700;
     text-transform: uppercase;
-    display: block;
-    margin-top: 1rem;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-top: auto;
+    padding-top: 1rem;
+    transition: all variables.$transition-base;
+    position: relative;
+    padding-left: 1.5rem;
+
+    &::before {
+      content: '⏱';
+      position: absolute;
+      left: 0;
+      top: 1rem;
+    }
   }
 
   .post__info {
     @include mixins.flex-center;
     justify-content: space-between;
-
+    flex-wrap: wrap;
+    gap: 0.75rem;
     color: variables.$font-color;
-    padding: 0.75rem 1.5rem;
+    padding: 1rem 1.5rem !important;
+    background: variables.$gray-50;
+    border-top: 1px solid variables.$gray-200;
+    margin-top: auto;
+    position: relative;
+    z-index: 1;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: variables.$font-color-light;
+      transition: color variables.$transition-base;
+
+      &:hover {
+        color: variables.$primary-color;
+      }
+    }
 
     .anticon {
       color: variables.$primary-color;
       font-size: 1rem;
       font-weight: bold;
+      transition: transform variables.$transition-base;
+    }
+
+    div:hover .anticon {
+      transform: scale(1.2);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ant-card-body {
+      padding: 1.5rem !important;
+    }
+
+    .ant-card-meta-title {
+      font-size: 1.25rem !important;
     }
   }
 }

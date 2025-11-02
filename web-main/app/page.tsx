@@ -1,29 +1,34 @@
-import Layout, { Content } from "antd/lib/layout/layout";
-import { AppHeader } from "@/modules/landing/components/AppHeader/AppHeader";
-import { About } from "@/modules/landing/containers/About/About";
-import { Pricing } from "@/modules/landing/containers/Pricing/Pricing";
-import { TestimonialReview } from "@/modules/landing/containers/Testimonial/Testimonial";
-import { Blogs } from "@/modules/landing/containers/Blog/Blog";
-import { PartnerCards } from "@/modules/landing/containers/PartnerCards/PartnerCards";
-import { Contact } from "@/modules/landing/containers/Contact/Contact";
-import { AppFooter } from "@/modules/landing/components/AppFooter/AppFooter";
-import { LatestNews } from "@/modules/landing/containers/LatestNews/LatestNews";
 import { getGalleryServer } from "@/modules/engagement/gallery/gallery.service";
 import { getNewsServer } from "@/modules/engagement/news/news.service";
-import Registeration from "@/modules/landing/containers/Registeration/Registeration";
+import { AppFooter } from "@/modules/landing/components/AppFooter/AppFooter";
+import { AppHeader } from "@/modules/landing/components/AppHeader/AppHeader";
 import Home from "@/modules/landing/containers/Home/Home";
-import { getFeePackagesServer } from "@/modules/finance/fee_package/fee_package.service";
+import { LatestNews } from "@/modules/landing/containers/LatestNews/LatestNews";
+import { PartnerCards } from "@/modules/landing/containers/PartnerCards/PartnerCards";
+import Registeration from "@/modules/landing/containers/Registeration/Registeration";
+import Layout, { Content } from "antd/lib/layout/layout";
 
 
 export default async function Landing() {
-  const newsData = await getNewsServer({ pagination: { current: 1, pageSize: 6 } });
-  const galleryData = await getGalleryServer({ pagination: { current: 1, pageSize: 6 } });
-  const feePackagesData = await getFeePackagesServer({ pagination: { current: 1, pageSize: 10 } });
+  // Gracefully handle API errors if backend is not available
+  let initialPosts = [];
+  let initialGallery = [];
 
-  const initialPosts = newsData?.results || [];
-  const initialGallery = galleryData?.results || [];
-  const feePackages = feePackagesData?.results || [];
+  try {
+    const newsData = await getNewsServer({ pagination: { current: 1, pageSize: 6 } });
+    initialPosts = newsData?.results || [];
+  } catch (error) {
+    console.warn('Failed to fetch news:', error);
+    initialPosts = [];
+  }
 
+  try {
+    const galleryData = await getGalleryServer({ pagination: { current: 1, pageSize: 6 } });
+    initialGallery = galleryData?.results || [];
+  } catch (error) {
+    console.warn('Failed to fetch gallery:', error);
+    initialGallery = [];
+  }
 
   return (
     <Layout>
@@ -31,13 +36,8 @@ export default async function Landing() {
         <AppHeader />
         <Home initialPosts={initialPosts} />
         <LatestNews newsList={initialPosts} galleryList={initialGallery} />
-        <About />
         <Registeration />
-        <Pricing feePackages={feePackages} />
-        <TestimonialReview />
-        <Blogs />
         <PartnerCards />
-        <Contact />
       </Content>
       <AppFooter />
     </Layout>

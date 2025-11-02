@@ -1,23 +1,31 @@
 // modules/landing/containers/Testimonial/TestimonialReview.tsx
-import React from 'react';
+import { getTestimonialsServer } from '@/modules/engagement/testimonial/testimonial.service';
+import { Container } from '../../components/Container/Container';
 import { SectionHeading } from '../../components/SectionHeading/SectionHeading';
 import TestimonialCarousel from './TestimonialCarousel';
-import { TableParams } from '@/utils/table/table.model';
-import { getTestimonialsServer } from '@/modules/engagement/testimonial/testimonial.service';
 
 export const TestimonialReview = async () => {
-  const data = await getTestimonialsServer({ pagination: { current: 1, pageSize: 10 } });
-  const reviews = data.results || [];
+  let reviews = [];
+
+  try {
+    const data = await getTestimonialsServer({ pagination: { current: 1, pageSize: 10 } });
+    reviews = data?.results || [];
+  } catch (error) {
+    console.warn('Failed to fetch testimonials:', error);
+    reviews = [];
+  }
 
   return (
-    <>
-      <SectionHeading
-        heading="Testimonials"
-        subHeading="Hear from our users and partners about their experiences. Discover how our platform has made a difference through real stories and honest feedback."
-      />
+    <section id="testimonials">
+      <Container>
+        <SectionHeading
+          heading="Testimonials"
+          subHeading="Hear from our users and partners about their experiences. Discover how our platform has made a difference through real stories and honest feedback."
+        />
+      </Container>
       {/* Pass server-fetched reviews to client carousel */}
       <TestimonialCarousel reviews={reviews} />
-    </>
+    </section>
   );
 };
 

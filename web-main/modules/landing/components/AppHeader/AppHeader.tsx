@@ -1,10 +1,10 @@
 'use client';
-import React, { useState } from 'react';
-import { Affix, Drawer, Menu, Button, Grid } from 'antd';
-import { Header } from 'antd/lib/layout/layout';
 import { MenuOutlined } from '@ant-design/icons';
-import { Container } from '../Container/Container';
+import { Affix, Button, Drawer, Grid, Menu } from 'antd';
+import { Header } from 'antd/lib/layout/layout';
 import Link from 'next/link';
+import { useState } from 'react';
+import { Container } from '../Container/Container';
 import './AppHeader.scss';
 
 const { useBreakpoint } = Grid;
@@ -16,27 +16,31 @@ export const AppHeader = () => {
   const menuItems = [
     {
       key: 'home',
-      label: <Link className="app-header__menu-item" href="/#home">Home</Link>,
+      label: <Link className="app-header__menu-item" href="/">Home</Link>,
     },
     {
       key: 'about',
-      label: <Link className="app-header__menu-item" href="/#about">About</Link>,
+      label: <Link className="app-header__menu-item" href="/about">About</Link>,
     },
     {
       key: 'news',
       label: <Link className="app-header__menu-item" href="/#news">News</Link>,
     },
     {
-      key: 'team',
-      label: <Link className="app-header__menu-item" href="/#team">Team</Link>,
+      key: 'pricing',
+      label: <Link className="app-header__menu-item" href="/pricing">Pricing</Link>,
+    },
+    {
+      key: 'testimonials',
+      label: <Link className="app-header__menu-item" href="/testimonials">Testimonials</Link>,
     },
     {
       key: 'blog',
-      label: <Link className="app-header__menu-item" href="/#blog">Blog</Link>,
+      label: <Link className="app-header__menu-item" href="/blog">Blog</Link>,
     },
     {
       key: 'contact',
-      label: <Link className="app-header__menu-item" href="/#contact">Contact</Link>,
+      label: <Link className="app-header__menu-item" href="/contact">Contact</Link>,
     },
     {
       key: 'registeration',

@@ -1,12 +1,13 @@
 // modules/landing/containers/Blog/BlogList.tsx
 'use client';
-import React, { useState } from 'react';
-import { Col, Row } from 'antd';
-import { Container } from '../../components/Container/Container';
-import { SectionHeading } from '../../components/SectionHeading/SectionHeading';
-import { Post } from './Post/Post';
 import { Blog } from '@/modules/engagement/blog/blog.model';
 import { toDateAndTime } from '@/utils/timeUtils';
+import { Col, Row } from 'antd';
+import React, { useState } from 'react';
+import { Container } from '../../components/Container/Container';
+import { SectionHeading } from '../../components/SectionHeading/SectionHeading';
+import './Blog.scss';
+import { Post } from './Post/Post';
 
 interface BlogListProps {
   initialPosts: Blog[];

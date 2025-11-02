@@ -1,1 +1,53 @@
-@use "../../styles/main.scss";
+@use '../../styles/variables.scss' as variables;
+@use '../../styles/mixins.scss' as mixins;
+
+#pricing {
+  position: relative;
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+  overflow: hidden;
+
+  // Animated background elements
+  &::before {
+    content: "";
+    position: absolute;
+    top: 20%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 15s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 20%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 12s ease-in-out infinite reverse;
+    z-index: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+  }
+
+  // Ant Design row styling
+  .ant-row {
+    position: relative;
+    z-index: 1;
+  }
+}

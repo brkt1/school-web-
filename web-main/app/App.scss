@@ -1,16 +1,32 @@
-// In SCSS, importing from node_modules works similarly but without the ~
-// Also, for antd you typically import CSS/SCSS directly or configure your build differently
+// Modern app-level styles
 @use '../modules/landing/styles/main.scss';
 @use '../modules/landing/styles/variables.scss';
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 main {
-  background: white;
+  background: variables.$background-color;
+  min-height: 100vh;
 }
 
 body {
-  font-family: variables.$primary-font;  // Note: LESS variables (@var) become SCSS variables ($var)
+  font-family: variables.$primary-font;
+  color: variables.$font-color;
+  background: variables.$background-color;
+}
+
+// Smooth transitions for all interactive elements
+a, button, input, select, textarea {
+  transition: all variables.$transition-base;
+}
+
+// Modern focus states
+*:focus-visible {
+  outline: 2px solid variables.$primary-color;
+  outline-offset: 2px;
+  border-radius: variables.$radius-sm;
 }

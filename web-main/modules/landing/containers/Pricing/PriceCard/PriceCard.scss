@@ -1,32 +1,180 @@
-@use '../../../styles/variables.scss';
-@use "../../../styles/main.scss";
-@use "../../../styles/mixins.scss";
+@use '../../../styles/variables.scss' as variables;
+@use "../../../styles/mixins.scss" as mixins;
 
 .price-card {
-  @include mixins.card;
+  border-radius: variables.$radius-2xl !important;
+  border: 2px solid transparent !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(59, 130, 246, 0.1) !important;
+  transition: all variables.$transition-base !important;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+
+  // Animated gradient border
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: variables.$radius-2xl;
+    padding: 2px;
+    background: variables.$gradient-blue;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity variables.$transition-base;
+    z-index: 0;
+  }
+
+  // Glowing background effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity variables.$transition-slow;
+    z-index: 0;
+  }
 
   &:hover {
-    border: 1px solid variables.$primary-color !important;
+    transform: translateY(-12px) rotateX(2deg) !important;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+    border-color: transparent !important;
+
+    &::before {
+      opacity: 1;
+    }
+
+    &::after {
+      opacity: 1;
+    }
+
+    .price-card__price {
+      transform: scale(1.05);
+    }
+
+    .price-card__title {
+      background: variables.$gradient-blue;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .ant-card-body {
+    padding: 3rem 2.5rem !important;
+    position: relative;
+    z-index: 1;
   }
 
   .price-card__title {
-    font-weight: 600;
-    text-transform: uppercase;
-    margin: 1rem auto;
+    font-weight: 800;
+    font-size: 1.75rem;
+    text-transform: none;
+    margin: 0 auto 2rem;
+    color: variables.$font-color;
+    font-family: variables.$heading-font;
+    letter-spacing: -0.5px;
+    transition: all variables.$transition-base;
+    position: relative;
+    display: inline-block;
   }
 
   .price-card__price {
-    color: variables.$primary-color;
-    font-size: 2.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    background: variables.$gradient-blue;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    font-family: variables.$heading-font;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.25rem;
+    transition: transform variables.$transition-base;
+    line-height: 1;
+
+    span {
+      font-size: 1.5rem;
+      font-weight: 600;
+      -webkit-text-fill-color: variables.$font-color-light;
+      opacity: 0.7;
+      align-self: flex-start;
+      margin-top: 0.5rem;
+    }
   }
 
   .price-card__feature {
     @include mixins.text;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    color: variables.$font-color;
+    font-size: 1rem;
+    position: relative;
+    padding-left: 2rem;
+    transition: all variables.$transition-fast;
+
+    &::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 1rem;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: variables.$gradient-blue;
+      color: white;
+      border-radius: variables.$radius-full;
+      font-weight: bold;
+      font-size: 0.875rem;
+      transition: all variables.$transition-fast;
+    }
+
+    &:hover {
+      padding-left: 2.5rem;
+      color: variables.$primary-color;
+
+      &::before {
+        transform: scale(1.2) rotate(360deg);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      }
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   .price-card__button {
-    margin: 1rem auto;
+    margin: 2.5rem auto 0;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .ant-card-body {
+      padding: 2rem 1.5rem !important;
+    }
+
+    .price-card__price {
+      font-size: 2.5rem;
+
+      span {
+        font-size: 1.25rem;
+      }
+    }
   }
 }

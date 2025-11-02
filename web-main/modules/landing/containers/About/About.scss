@@ -1,1 +1,326 @@
-@use "../../styles/main.scss";
+@use "../../styles/variables.scss" as variables;
+@use "../../styles/mixins.scss" as mixins;
+
+.about {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .about__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  // Introduction Card
+  .about__intro-card {
+    display: flex;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: variables.$radius-2xl;
+    padding: 3rem;
+    margin-bottom: 4rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all variables.$transition-base;
+    animation: fadeInUp 0.8s ease-out;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+
+    .about__intro-icon {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      background: variables.$gradient-blue;
+      border-radius: variables.$radius-xl;
+      @include mixins.flex-center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+
+      @media (max-width: 768px) {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+    }
+
+    .about__intro-content {
+      flex: 1;
+
+      .about__intro-text {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: variables.$font-color;
+        margin: 0;
+
+        strong {
+          color: variables.$primary-color;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  // Main Grid
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  // Mission Section
+  .about__mission {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: variables.$radius-2xl;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all variables.$transition-base;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
+    }
+
+    @media (max-width: 768px) {
+      padding: 2rem;
+    }
+
+    .about__section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .about__section-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        border-radius: variables.$radius-lg;
+        @include mixins.flex-center;
+        color: variables.$primary-color;
+        font-size: 1.5rem;
+      }
+
+      .about__section-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: variables.$font-color;
+        margin: 0;
+        font-family: variables.$heading-font;
+        background: variables.$gradient-blue;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    .about__section-description {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: variables.$font-color-light;
+      margin-bottom: 1.5rem;
+    }
+
+    .about__mission-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .about__mission-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(59, 130, 246, 0.05);
+        border-radius: variables.$radius-lg;
+        border-left: 3px solid variables.$primary-color;
+        transition: all variables.$transition-base;
+        animation: slideInLeft 0.5s ease-out both;
+
+        @for $i from 1 through 4 {
+          &:nth-child(#{$i}) {
+            animation-delay: #{$i * 0.1}s;
+          }
+        }
+
+        &:hover {
+          background: rgba(59, 130, 246, 0.1);
+          transform: translateX(8px);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .about__mission-bullet {
+          flex-shrink: 0;
+          width: 8px;
+          height: 8px;
+          background: variables.$gradient-blue;
+          border-radius: 50%;
+          margin-top: 0.5rem;
+          box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+        }
+
+        span:last-child {
+          flex: 1;
+          color: variables.$font-color;
+          line-height: 1.6;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+
+  // Vision & Values Cards
+  .about__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .about__card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: variables.$radius-2xl;
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all variables.$transition-base;
+    animation: fadeInUp 0.8s ease-out both;
+
+    // Gradient top border using pseudo-element
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      opacity: 0;
+      transition: opacity variables.$transition-base;
+    }
+
+    &.about__vision-card {
+      animation-delay: 0.4s;
+
+      &::before {
+        background: variables.$gradient-blue;
+        opacity: 1;
+      }
+
+      .about__card-icon {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        color: variables.$primary-color;
+      }
+    }
+
+    &.about__values-card {
+      animation-delay: 0.6s;
+
+      &::before {
+        background: variables.$gradient-purple;
+        opacity: 1;
+      }
+
+      .about__card-icon {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+        color: variables.$secondary-color;
+      }
+    }
+
+    &:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(59, 130, 246, 0.2);
+
+      .about__card-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+    }
+
+    .about__card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: variables.$radius-xl;
+      @include mixins.flex-center;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      transition: all variables.$transition-base;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .about__card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: variables.$font-color;
+      margin-bottom: 1rem;
+      font-family: variables.$heading-font;
+    }
+
+    .about__card-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: variables.$font-color-light;
+      margin: 0;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}

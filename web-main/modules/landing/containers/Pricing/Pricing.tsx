@@ -1,9 +1,9 @@
-import React from "react";
-import { Row, Col } from "antd";
-import { SectionHeading } from "../../components/SectionHeading/SectionHeading";
-import { Container } from "../../components/Container/Container";
-import { PriceCard } from "./PriceCard/PriceCard";
 import { FeePackage } from "@/modules/finance/fee_package/fee_package.model";
+import { Col, Row } from "antd";
+import { Container } from "../../components/Container/Container";
+import { SectionHeading } from "../../components/SectionHeading/SectionHeading";
+import { PriceCard } from "./PriceCard/PriceCard";
+import "./Pricing.scss";
 
 interface PricingProps {
   feePackages: FeePackage[];
