@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import StoreProvider from "@/context/StoreProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "@ant-design/v5-patch-for-react-19";
-import { AppHeader } from "@/modules/landing/components/AppHeader/AppHeader";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +18,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Take The Stage",
   description: "SPEAK LIKE A LEADER",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({

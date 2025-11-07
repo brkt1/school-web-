@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Form, Input, Select, DatePicker } from "antd";
-import {ContactUs } from "../contact_us.model";
-import "@ant-design/v5-patch-for-react-19";
-import useContactUsService from "../contact_us.service";
-import { useRouter } from "next/navigation";
 import useHandleError from "@/utils/api/handleError";
 import { Navigations } from "@/utils/common_models/commons.model";
+import "@ant-design/v5-patch-for-react-19";
+import { Input as AntInput, Button, Form, Input } from "antd";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { ContactUs } from "../contact_us.model";
+import useContactUsService from "../contact_us.service";
+
+const { TextArea } = AntInput;
 
 interface ContactUsFormProps extends Partial<ContactUs>, Navigations {}
 
@@ -48,10 +50,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ id, ...props }) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical" >
+    <Form form={form} onFinish={onFinish} layout="vertical" className="modern-form">
       <div className="flex justify-between">
         <div>
-            <h2 className="text-2xl font-bold">ContactUs Form</h2>
+            <h2 className="text-2xl font-bold">Contact Us Form</h2>
         </div>
         <div className="flex gap-4 mb-4">
         {id ? (
@@ -66,31 +68,84 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ id, ...props }) => {
         </Form.Item>
       </div>
       </div>
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6">
+      <div className="grid sm:grid-cols-2 gap-6">
 
             {!props.full_name && (
-      <Form.Item name="full_name" label="Full Name" rules={[{ required: true, message: "Full Name is required" }]}>
-        <Input placeholder="Full Name" />
+      <Form.Item 
+        name="full_name" 
+        label={
+          <span>
+            Full Name <span className="text-red-500">*</span>
+          </span>
+        }
+        className="modern-form-item"
+        rules={[{ required: true, message: "Full Name is required" }]}
+      >
+        <Input placeholder="Enter your full name" size="large" />
       </Form.Item>)}
 
             {!props.email && (
-      <Form.Item name="email" label="Email" rules={[{ required: true, message: "Email is required" }]}>
-        <Input placeholder="Email" />
+      <Form.Item 
+        name="email" 
+        label={
+          <span>
+            Email <span className="text-red-500">*</span>
+          </span>
+        }
+        className="modern-form-item"
+        rules={[
+          { required: true, message: "Email is required" },
+          { type: "email", message: "Please enter a valid email address" }
+        ]}
+      >
+        <Input type="email" placeholder="your.email@example.com" size="large" />
       </Form.Item>)}
 
             {!props.phone_number && (
-      <Form.Item name="phone_number" label="Phone_Number" rules={[]}>
-        <Input />
+      <Form.Item 
+        name="phone_number" 
+        label={
+          <span>
+            Phone Number <span className="text-gray-400 text-xs">(Optional)</span>
+          </span>
+        }
+        className="modern-form-item"
+      >
+        <Input placeholder="Enter your phone number" size="large" />
       </Form.Item>)}
 
             {!props.subject && (
-      <Form.Item name="subject" label="Subject" rules={[{ required: true, message: "Subject is required" }]}>
-        <Input />
+      <Form.Item 
+        name="subject" 
+        label={
+          <span>
+            Subject <span className="text-red-500">*</span>
+          </span>
+        }
+        className="modern-form-item sm:col-span-2"
+        rules={[{ required: true, message: "Subject is required" }]}
+      >
+        <Input placeholder="Enter message subject" size="large" />
       </Form.Item>)}
 
             {!props.message && (
-      <Form.Item name="message" label="Message" rules={[{ required: true, message: "Message is required" }]}>
-        <Input />
+      <Form.Item 
+        name="message" 
+        label={
+          <span>
+            Message <span className="text-red-500">*</span>
+          </span>
+        }
+        className="modern-form-item sm:col-span-2"
+        rules={[{ required: true, message: "Message is required" }]}
+      >
+        <TextArea 
+          rows={6} 
+          placeholder="Enter your message here..." 
+          size="large"
+          showCount
+          maxLength={1000}
+        />
       </Form.Item>)}
       </div>
     </Form>

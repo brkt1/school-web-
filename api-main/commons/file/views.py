@@ -15,7 +15,7 @@ from itertools import chain
 
 class FileListView(generics.ListAPIView):
     serializer_class = FileListSerializer
-    permission_classes = [ReadOnly|WriteOnly|CustomPermission]
+    permission_classes = [ReadOnly, WriteOnly, CustomPermission]
     queryset = File.objects.all()
     
     def perform_create(self, serializer):
@@ -23,7 +23,7 @@ class FileListView(generics.ListAPIView):
         serializer.save()
         
 class FileCreateListView(generics.ListCreateAPIView):
-    permission_classes = [ReadOnly|WriteOnly|CustomPermission]
+    permission_classes = [ReadOnly, WriteOnly, CustomPermission]
     queryset = File.objects.all()
     
     def get_serializer_class(self):
@@ -36,7 +36,7 @@ class FileCreateListView(generics.ListCreateAPIView):
         serializer.save()
         
 class FileDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [PartialUpdateOnly|ReadOnly|WriteOnly|CustomPermission]
+    permission_classes = [PartialUpdateOnly, ReadOnly, WriteOnly, CustomPermission]
     serializer_class = FileListSerializer
     queryset = File.objects.all()
     

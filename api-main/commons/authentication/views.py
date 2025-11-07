@@ -236,7 +236,7 @@ class ListUser(generics.ListCreateAPIView):
             return UserDetailSerializer
 
     def perform_create(self, serializer):
-        if not self.request.user.is_superuser:
+        if not self.request.user or not self.request.user.is_authenticated or not self.request.user.is_superuser:
             raise serializers.ValidationError('You are not a superuser for this website')
 
         # with transaction.atomic():
@@ -280,7 +280,10 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserDetailSerializer
     def perform_update(self, serializer):
         with transaction.atomic():
-            if serializer.validated_data.get("is_active") and serializer.validated_data.get("username") != self.request.user.username:
+            if (serializer.validated_data.get("is_active") and 
+                self.request.user and 
+                self.request.user.is_authenticated and 
+                serializer.validated_data.get("username") != self.request.user.username):
                 email = self.get_object().email
                 email and send_password_reset_link(email)
             return super().perform_update(serializer)
@@ -559,12 +562,12 @@ class ListEducationalBackgroundTutor(generics.ListAPIView):
     serializer_class = EducationalBackgroundTutorSerializer
 
 class ListEducationalBackground(generics.ListCreateAPIView):
-    permission_classes = [WriteOnly|ReadOnly|CustomPermission]
+    permission_classes = [WriteOnly, ReadOnly, CustomPermission]
     queryset = EducationalBackground.objects.all()
     serializer_class = EducationalBackgroundSerializer
 
     def get_queryset(self):
-        user_id = self.request.query_params.get("user_id") or self.request.user.id
+        user_id = self.request.query_params.get("user_id") or (self.request.user.id if self.request.user and self.request.user.is_authenticated else None)
         if not user_id and isinstance(self.request.user, AnonymousUser):
             return []
         if user_id is not None:
@@ -606,12 +609,12 @@ def perform_file_delete(instance):
         instance.document.delete()
 
 class ExperienceListCreate(generics.ListCreateAPIView):
-    permission_classes = [WriteOnly|ReadOnly|CustomPermission, ]
+    permission_classes = [WriteOnly, ReadOnly, CustomPermission]
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
     def get_queryset(self):
-        user_id = self.request.query_params.get("user_id") or self.request.user.id
+        user_id = self.request.query_params.get("user_id") or (self.request.user.id if self.request.user and self.request.user.is_authenticated else None)
         if not user_id and isinstance(self.request.user, AnonymousUser):
             return []
         if user_id is not None:
@@ -651,7 +654,7 @@ from rest_framework import pagination
 from django.core.paginator import Paginator as DjangoPaginator
 
 class ToBeInstructorRequestListCreate(generics.ListCreateAPIView):
-    permission_classes = [WriteOnly|ReadOnly|CustomPermission, ]
+    permission_classes = [WriteOnly, ReadOnly, CustomPermission]
     queryset = ToBeInstructorRequest.objects.all()
     serializer_class = ToBeInstructorRequestSerializer
 
@@ -659,10 +662,10 @@ class ToBeInstructorRequestListCreate(generics.ListCreateAPIView):
         user_id = self.request.query_params.get("user_id")
         status = self.request.query_params.get("status")
 
-        if self.request.method == "GET" and not isinstance(self.request.user, AnonymousUser):
-            user_id =  self.request.user.id
+        if self.request.method == "GET" and self.request.user and self.request.user.is_authenticated:
+            user_id = self.request.user.id
 
-        if not user_id and isinstance(self.request.user, AnonymousUser):
+        if not user_id and (not self.request.user or isinstance(self.request.user, AnonymousUser)):
             return []
         if user_id:
             self.queryset = self.queryset.filter(user=user_id)

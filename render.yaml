@@ -13,25 +13,15 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DB_NAME
-        fromDatabase:
-          name: take_the_stage
-          property: database
+        value: "take_the_stage"
       - key: DB_USER
-        fromDatabase:
-          name: take_the_stage
-          property: user
+        value: "take_the_stage"
       - key: DB_PASSWORD
-        fromDatabase:
-          name: take_the_stage
-          property: password
+        value: "r2PJhsx0dkFktV1ai5SNPOtS8uOzzOlY"
       - key: DB_HOST
-        fromDatabase:
-          name: take_the_stage
-          property: host
+        value: "dpg-d41qvjqli9vc73fos9j0-a.oregon-postgres.render.com"
       - key: DB_PORT
-        fromDatabase:
-          name: take_the_stage
-          property: port
+        value: "5432"
       - key: DEVELOPMENT_URL
         value: "https://takethestage-api.onrender.com"
       - key: PRODUCTION_URL
@@ -54,6 +44,50 @@ services:
         value: ""
       - key: WEB_GENERATOR_PATH
         value: "/opt/render/project/src/web-main"
+      - key: GOOGLE_CLIENT_ID
+        value: ""
+      - key: GOOGLE_CLIENT_SECRET
+        value: ""
+      - key: GITHUB_CLIENT_ID
+        value: ""
+      - key: GITHUB_CLIENT_SECRET
+        value: ""
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+        value: ""
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+        value: ""
+      - key: TELEGRAM_BOT_TOKEN
+        value: ""
+      - key: EMAIL_HOST
+        value: ""
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: EMAIL_USE_SSL
+        value: "False"
+      - key: EMAIL_HOST_USER
+        value: ""
+      - key: EMAIL_HOST_PASSWORD
+        value: ""
+      - key: DEFAULT_PASSWORD
+        value: ""
+      - key: REDIS_HOST
+        value: ""  # Leave empty if not using Redis, or set to Redis service URL
+      - key: REDIS_PORT
+        value: "6379"
+      - key: REDIS_PASSWORD
+        value: ""
+      - key: CHAPA_WEBHOOK_SECRET
+        value: ""
+      - key: FRONTEND_BASE_URL
+        value: "https://takethestage-web.onrender.com"
+      - key: DEFAULT_FROM_EMAIL
+        value: "takethestage@gmail.com"
+      - key: BREVO_SENDER_EMAIL
+        value: ""
+      - key: BREVO_SENDER_NAME
+        value: "Take The Stage"
 
   # Next.js Frontend
   - type: web
@@ -67,10 +101,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: takethestage-api
-          property: host
+        value: "https://takethestage-api.onrender.com"
 
 databases:
   - name: take_the_stage

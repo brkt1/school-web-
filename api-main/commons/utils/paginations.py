@@ -8,7 +8,7 @@ from django.utils.encoding import force_str
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size_query_param = 'ps'
-    max_page_size = 50
+    max_page_size = 200  # Increased from 50 to 200 to support dropdown requests
     page_query_param = 'pn'
 
     def get_paginated_response(self, data):
@@ -17,7 +17,7 @@ class CustomPagination(pagination.PageNumberPagination):
         response['next'] = self.get_next_link()
         response['previous'] = self.get_previous_link()
         response['results'] = data
-        return Response(data=response)
+        return Response(response)  # Fixed: removed data= to return response directly
 
 
 class CustomCursorPagination(pagination.CursorPagination):

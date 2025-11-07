@@ -30,11 +30,33 @@ services:
       - DB_NAME=${DB_NAME:-takethestage_db}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
-      - DB_HOST=${DB_HOST:-dpg-d41qvjqli9vc73fos9j0-a.oregon-postgres.render.com}
+      - DB_HOST=${DB_HOST:-postgres}
       - DB_PORT=${DB_PORT:-5432}
       - SECRET_KEY=${SECRET_KEY:-django-insecure-dev-key-change-in-production}
       - DEVELOPMENT_URL=${DEVELOPMENT_URL:-http://localhost:8000}
       - FRONT_END_URL_DEV=${FRONT_END_URL_DEV:-http://localhost:3000}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY:-}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - EMAIL_HOST=${EMAIL_HOST:-}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS:-True}
+      - EMAIL_USE_SSL=${EMAIL_USE_SSL:-False}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER:-}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD:-}
+      - DEFAULT_PASSWORD=${DEFAULT_PASSWORD:-}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CHAPA_WEBHOOK_SECRET=${CHAPA_WEBHOOK_SECRET:-}
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL:-http://localhost:3000}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-takethestage@gmail.com}
+      - BREVO_SENDER_EMAIL=${BREVO_SENDER_EMAIL:-}
+      - BREVO_SENDER_NAME=${BREVO_SENDER_NAME:-Take The Stage}
     volumes:
       - ./api-main:/app
       - api_static:/app/staticfiles
@@ -43,6 +65,19 @@ services:
       - takethestage_network
     # Remove depends_on since we're using Render PostgreSQL by default
     # If using local postgres, add: depends_on: [postgres] and use profile
+
+  # Redis (for Channels/WebSockets)
+  redis:
+    image: redis:7-alpine
+    container_name: takethestage_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - takethestage_network
+    profiles:
+      - local-db  # Only start with local database profile
 
   # Next.js Frontend
   web:
@@ -66,6 +101,7 @@ networks:
 
 volumes:
   postgres_data:
+  redis_data:
   api_static:
   api_media:
 

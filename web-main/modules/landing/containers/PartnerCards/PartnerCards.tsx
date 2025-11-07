@@ -39,7 +39,7 @@ export const PartnerCards = () => {
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={24}
               slidesPerView={1}
-              loop={partners.length > 3}
+              loop={partners.length > 4}
               navigation
               pagination={{ clickable: true, dynamicBullets: true }}
               autoplay={{ 

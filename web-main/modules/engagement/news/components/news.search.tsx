@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Select, Spin } from "antd";
 import type { SelectProps } from "antd";
-import useNewsService from "../news.service";
+import { Select, Spin } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { News } from "../news.model";
+import useNewsService from "../news.service";
 
 interface SearchInputProps
   extends Omit<SelectProps<number>, "options" | "onSearch"> {
@@ -53,6 +53,13 @@ const NewsSearchInput: React.FC<SearchInputProps> = ({
         });
 
         setHasMore(!!next);
+      } catch (error) {
+        // Handle network errors gracefully
+        console.error("Error fetching news:", error);
+        // Don't update options on error, keep existing options
+        if (!append) {
+          setOptions([]);
+        }
       } finally {
         setLoading(false);
       }

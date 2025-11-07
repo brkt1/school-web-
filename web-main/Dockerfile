@@ -40,9 +40,13 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy node_modules if standalone build exists
-RUN if [ -d "/app/.next/standalone" ]; then \
-      cp -r /app/.next/standalone/node_modules ./node_modules 2>/dev/null || true; \
+# Copy package.json and node_modules for fallback (if standalone doesn't have them)
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules /tmp/builder_node_modules
+RUN if [ ! -d "/app/node_modules" ] || [ ! "$(ls -A /app/node_modules 2>/dev/null)" ]; then \
+      echo "Copying node_modules from builder..." && \
+      cp -r /app/.next/standalone/node_modules ./node_modules 2>/dev/null || \
+      cp -r /tmp/builder_node_modules ./node_modules 2>/dev/null || true; \
     fi
 
 # Set the correct permission
@@ -55,15 +59,20 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# Start command - try standalone first, fallback to npm start
-CMD if [ -f "server.js" ]; then \
-      echo "Starting with standalone server..." && \
-      node server.js; \
-    elif [ -f ".next/standalone/server.js" ]; then \
-      echo "Starting with standalone build..." && \
-      node .next/standalone/server.js; \
-    else \
-      echo "Starting with npm start..." && \
-      npm start; \
-    fi
+# Create startup script
+RUN printf '#!/bin/sh\n\
+set -e\n\
+if [ -f "server.js" ]; then\n\
+  echo "Starting with standalone server..."\n\
+  exec node server.js\n\
+elif [ -f ".next/standalone/server.js" ]; then\n\
+  echo "Starting with standalone build..."\n\
+  exec node .next/standalone/server.js\n\
+else\n\
+  echo "Starting with npm start..."\n\
+  exec npm start\n\
+fi\n' > /app/start.sh && chmod +x /app/start.sh
+
+# Use exec form to properly handle signals
+CMD ["/app/start.sh"]
 

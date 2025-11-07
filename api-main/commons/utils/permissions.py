@@ -44,15 +44,20 @@ class CustomPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
+        if not user or not user.is_authenticated:
+            return False
         if user.is_superuser:
             return True
         if request.method not in self.perms_map:
             raise serializers.ValidationError("The method is not allowed")
         request_param = self.perms_map[request.method]
+        model = None
         if hasattr(view,"permission_model"):
             model = view.permission_model
         elif hasattr(view, 'get_serializer_class'):
-            model = view.get_serializer_class().Meta().model
+            serializer_class = view.get_serializer_class()
+            if serializer_class and hasattr(serializer_class, 'Meta'):
+                model = serializer_class.Meta.model
         assert model is not None, (
                 '{}.permission_model and {}.serializer_class returned None'.format(view.__class__.__name__,view.__class__.__name__)
         )
@@ -63,7 +68,7 @@ class CustomPermission(permissions.BasePermission):
 class IsSystemAdminUser(permissions.BasePermission):
     
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_superuser)
+        return bool(request.user and request.user.is_authenticated and request.user.is_superuser)
 
 class ReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -72,7 +77,7 @@ class ReadOnly(permissions.BasePermission):
 class WriteOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'POST':
-         return request.method == "POST" 
+            return request.method == "POST" 
         return True
 
 class PartialUpdateOnly(permissions.BasePermission):

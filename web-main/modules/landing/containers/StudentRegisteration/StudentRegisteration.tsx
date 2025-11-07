@@ -51,16 +51,14 @@ const StudentRegisteration = () => {
     }
   };
   return (
-    <div className="bg-gray-100">
-      <div className="w-full max-w-6xl mx-auto bg-white p-6">
-        <StudentForm is_client form={studentForm} />
-        <StudentClassShiftMultipleForm form={classShiftForm} student="1234" />
-        <Form.Item>
-          <Button onClick={handleSave} type="primary" loading={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      </div>
+    <div className="registration-container">
+      <StudentForm is_client form={studentForm} />
+      <StudentClassShiftMultipleForm form={classShiftForm} student="1234" />
+      <Form.Item className="flex justify-end">
+        <Button onClick={handleSave} type="primary" loading={loading} size="large">
+          Submit Registration
+        </Button>
+      </Form.Item>
     </div>
   );
 };

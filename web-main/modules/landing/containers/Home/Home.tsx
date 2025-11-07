@@ -1,7 +1,7 @@
 'use client';
 import { Col, Row } from 'antd';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiDownArrow } from 'react-icons/bi';
 import img from '../../../../assets/home/intro.png';
 import { AppButton } from '../../components/AppButton/AppButton';
@@ -20,14 +20,19 @@ const Home = () => {
     seconds: 0
   });
 
-  // Generate particle positions once on mount
-  const particles = useMemo(() => {
-    return Array.from({ length: 20 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 20,
-      duration: 15 + Math.random() * 10
-    }));
+  // Generate particle positions only on client side to avoid hydration mismatch
+  const [particles, setParticles] = useState<Array<{id: number; left: number; delay: number; duration: number}>>([]);
+  
+  useEffect(() => {
+    // Generate particles only on client side after mount
+    setParticles(
+      Array.from({ length: 20 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 20,
+        duration: 15 + Math.random() * 10
+      }))
+    );
   }, []);
 
   useEffect(() => {

@@ -1,11 +1,11 @@
 import useApi from "@/utils/api/api";
-import { Gallery } from "./gallery.model";
 import { FetchedApi } from "@/utils/common_models/commons.model";
 import { TableParams } from "@/utils/table/table.model";
 import { getRequestParams } from "@/utils/table/table.utils";
 import axios from "axios";
+import { Gallery } from "./gallery.model";
 
-const host = process.env.NEXT_PUBLIC_BASE_URL;
+const host = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
 
 export const getGalleryServer = async (params: TableParams) => {
   const requestParams = getRequestParams(params);

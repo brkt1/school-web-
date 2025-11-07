@@ -1,14 +1,9 @@
 // components/SocialIcons.tsx
 
 import {
-  FaTelegram,
-  FaTwitter,
-  FaFacebook,
-  FaLinkedin,
-  FaInstagram,
-  FaYoutube,
-  FaTiktok,
-  FaGithub,
+    FaFacebook,
+    FaTelegram,
+    FaTiktok
 } from "react-icons/fa";
 
 const socialLinks = [
@@ -64,7 +59,7 @@ const socialLinks = [
 
 export default function SocialIcons() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6 py-4">
+    <div className="flex flex-wrap items-center gap-3">
       {socialLinks.map(({ href, label, icon, className }) => (
         <a
           key={label}
@@ -72,7 +67,7 @@ export default function SocialIcons() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Visit us on ${label}`}
-          className={`transition-colors duration-200 ${className}`}
+          className={`social-icon-link ${className}`}
         >
           {icon}
         </a>

@@ -124,15 +124,71 @@ By default, Render auto-deploys when you push to the main branch. To verify:
 
 ## 🔧 Post-Deployment Configuration
 
-### Update CORS Settings
+### Security Configuration
 
-After deployment, update your Django `settings.py` or environment variables:
-```python
-CORS_ALLOWED_ORIGINS = [
-    "https://takethestage-web.onrender.com",
-    "https://your-custom-domain.com"
-]
-```
+The application implements comprehensive security measures to protect against common vulnerabilities:
+
+#### 1. **CORS & ALLOWED_HOSTS Protection**
+- Restricts ALLOWED_HOSTS to specific school domains (no wildcards)
+- Configures CORS to only allow requests from authorized origins
+- Prevents abuse by blocking unauthorized domains
+
+**Default Allowed Domains:**
+- `takethestage-api.onrender.com` (backend)
+- `takethestage-web.onrender.com` (frontend)
+- `takethestageplc.com`
+- `takethestage.org`
+- `localhost` and `127.0.0.1` (development only)
+
+**Adding Custom Domains:**
+
+If you need to add additional domains, set these environment variables in Render:
+
+**Option 1: Environment Variables (Recommended)**
+- `ALLOWED_HOSTS` → Comma-separated list (e.g., `"yourdomain.com,api.yourdomain.com"`)
+- `CORS_ALLOWED_ORIGINS` → Comma-separated list (e.g., `"https://yourdomain.com,https://app.yourdomain.com"`)
+
+**Option 2: Automatic Detection**
+- The system automatically adds domains from `PRODUCTION_URL` and `FRONT_END_URL_PROD` environment variables
+
+#### 2. **HTTPS/SSL Security**
+- Automatic HTTP to HTTPS redirect (production only)
+- HTTP Strict Transport Security (HSTS) with 1-year duration
+- HSTS preload enabled for browser support
+- Secure proxy SSL header configuration
+
+#### 3. **Cookie Security**
+- Session cookies: Secure, HttpOnly, SameSite=Lax
+- CSRF cookies: Secure, HttpOnly, SameSite=Lax
+- Prevents XSS and CSRF attacks
+
+#### 4. **Security Headers**
+- X-Frame-Options: DENY (prevents clickjacking)
+- Content-Type-Nosniff (prevents MIME type sniffing)
+- XSS Filter enabled
+- Referrer Policy: strict-origin-when-cross-origin
+- Cross-Origin-Opener-Policy: same-origin
+
+#### 5. **API Rate Limiting**
+- Anonymous users: 100 requests/hour
+- Authenticated users: 1000 requests/hour
+- Prevents API abuse and DDoS attacks
+
+#### 6. **Password Security**
+- Enhanced password validation (minimum 8 characters)
+- Argon2 password hashing (most secure, with PBKDF2 fallback)
+- Common password detection
+- Alphanumeric requirement enforcement
+
+#### 7. **File Upload Security**
+- Maximum file size: ~12 MB
+- Limited form fields (1000 max) to prevent DoS
+- Secure file permissions (644 for files, 755 for directories)
+
+#### 8. **Production Warnings**
+- Error reporting configured for production
+- Sensitive data protection in error messages
+- Admin email notifications for critical errors
 
 ### Update Frontend API URL
 

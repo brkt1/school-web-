@@ -1,22 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Form, Input, Select, DatePicker, FormInstance } from "antd";
-import { Student } from "../student.model";
-import "@ant-design/v5-patch-for-react-19";
-import useStudentService from "../student.service";
-import { useRouter } from "next/navigation";
-import useHandleError from "@/utils/api/handleError";
+import PhoneInputWrapper from "@/components/PhoneInput/phoneInput";
+import { GenderType } from "@/modules/auth/user/user.enum";
+import { User } from "@/modules/auth/user/user.model";
 import CitySearchInput from "@/modules/organization/city/components/city.search";
 import InstitutionSearchInput from "@/modules/organization/institution/components/institution.search";
 import RegionSearchInput from "@/modules/organization/region/components/region.search";
-import { enumToLabelValueArray } from "@/utils/object";
-import { StudentType } from "../student.enum";
-import { GenderType } from "@/modules/auth/user/user.enum";
-import PhoneInputWrapper from "@/components/PhoneInput/phoneInput";
-import { User } from "@/modules/auth/user/user.model";
+import useHandleError from "@/utils/api/handleError";
 import { Navigations } from "@/utils/common_models/commons.model";
+import { enumToLabelValueArray } from "@/utils/object";
+import "@ant-design/v5-patch-for-react-19";
+import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { StudentType } from "../student.enum";
+import { Student } from "../student.model";
+import useStudentService from "../student.service";
 
 interface StudentFormProps
   extends Partial<Student & User>,
@@ -34,6 +34,15 @@ const StudentForm: React.FC<StudentFormProps> = ({
   const form = propForm || internalForm
   const region = Form.useWatch('region', form)
   const [data, setData] = useState<Student>();
+  const prevRegionRef = React.useRef<string | undefined>(undefined);
+
+  // Clear city when region changes
+  useEffect(() => {
+    if (prevRegionRef.current !== undefined && prevRegionRef.current !== region) {
+      form.setFieldValue('city', undefined);
+    }
+    prevRegionRef.current = region;
+  }, [region, form]);
   const service = useStudentService();
   const router = useRouter();
   const errorHandler = useHandleError();
@@ -53,6 +62,12 @@ const StudentForm: React.FC<StudentFormProps> = ({
           form.setFieldValue("gender", res.data.user_detail.gender);
           form.setFieldValue("email", res.data.user_detail.email);
           form.setFieldValue("phone_number", res.data.user_detail.phone_number);
+          if (res.data.institution) {
+            form.setFieldValue("institution", res.data.institution);
+          }
+          if (res.data.woreda) {
+            form.setFieldValue("woreda", res.data.woreda);
+          }
         })
         .catch(() => {});
     }
@@ -80,7 +95,7 @@ const StudentForm: React.FC<StudentFormProps> = ({
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical">
+    <Form form={form} onFinish={onFinish} layout="vertical" className="modern-form">
       {is_client ? (
         <></>
       ) : (
@@ -114,153 +129,284 @@ const StudentForm: React.FC<StudentFormProps> = ({
           </div>
         </div>
       )}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6">
-        <Form.Item
-          name="first_name"
-          rules={[{ required: true, message: "First name is required" }]}
-          label="First Name"
-          className="w-full"
-        >
-          <Input placeholder="First Name" />
-        </Form.Item>
-        <Form.Item
-          name="middle_name"
-          rules={[{ required: true, message: "Middle name is required" }]}
-          label="Middle Name"
-          className="w-full"
-        >
-          <Input placeholder="Middle Name" />
-        </Form.Item>
-        <Form.Item name="last_name" label="Last Name" className="w-full">
-          <Input placeholder="Last Name" />
-        </Form.Item>
+      
+      {/* Personal Information Section */}
+      {is_client && (
+        <div className="form-section">
+          <h3 className="form-section__title">Personal Information</h3>
+          <p className="form-section__subtitle">Please provide your basic personal details</p>
+        </div>
+      )}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <Form.Item
+            name="first_name"
+            rules={[{ required: true, message: "First name is required" }]}
+            label={
+              <span>
+                First Name <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+          >
+            <Input placeholder="Enter your first name" size="large" />
+          </Form.Item>
+          
+          <Form.Item
+            name="middle_name"
+            label={
+              <span>
+                Middle Name <span className="text-gray-400 text-xs">(Optional)</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+          >
+            <Input placeholder="Enter your middle name" size="large" />
+          </Form.Item>
+          
+          <Form.Item 
+            name="last_name" 
+            label={
+              <span>
+                Last Name <span className="text-gray-400 text-xs">(Optional)</span>
+              </span>
+            } 
+            className="w-full modern-form-item"
+          >
+            <Input placeholder="Enter your last name" size="large" />
+          </Form.Item>
 
-        <Form.Item
-          name="gender"
-          label="Gender"
-          className="w-full"
-          rules={[{ required: true, message: "Gender is required" }]}
-        >
-          <Select
-            optionFilterProp="label"
-            options={enumToLabelValueArray(GenderType)}
-            placeholder="Gender"
-          />
-        </Form.Item>
+          <Form.Item
+            name="gender"
+            label={
+              <span>
+                Gender <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "Gender is required" }]}
+          >
+            <Select
+              size="large"
+              showSearch
+              allowClear
+              optionFilterProp="label"
+              options={enumToLabelValueArray(GenderType)}
+              placeholder="Select your gender"
+            />
+          </Form.Item>
+        </div>
+      </div>
+
+      {/* Account Information Section */}
+      {is_client && (
+        <div className="form-section mt-8">
+          <h3 className="form-section__title">Account Information</h3>
+          <p className="form-section__subtitle">Create your account credentials</p>
+        </div>
+      )}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         <Form.Item
           name="username"
-          required
-          label="Username"
-          className="w-full"
-          rules={[{ required: true, message: "Username is required" }]}
-        >
-          <Input placeholder="Username" />
-        </Form.Item>
-        <Form.Item
-          rules={[{ type: "email" }]}
-          label="Email"
-          name="email"
-          className="w-full"
-        >
-          <Input type="email" placeholder="Email" />
-        </Form.Item>
-
-        <Form.Item name="phone_number" label="Phone Number" className="w-full">
-          <PhoneInputWrapper placeholder="Phone Number" />
-        </Form.Item>
-
-        <Form.Item
-          name="grade"
-          label="Grade"
-          rules={[{ required: true, message: "Grade is required" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="region"
-          label="Region"
-          rules={[{ required: true, message: "Region is required" }]}
-        >
-          <RegionSearchInput detail={data?.region_detail} />
-        </Form.Item>
-
-        <Form.Item
-          name="city"
-          label="City"
-          rules={[{ required: true, message: "City is required" }]}
-        >
-          <CitySearchInput region={region} detail={data?.city_detail} />
-        </Form.Item>
-
-        {/* <Form.Item
-          name="woreda"
-          label="Woreda"
-          rules={[{ required: true, message: "Woreda is required" }]}
-        >
-          <Input />
-        </Form.Item> */}
-
-        {/* <Form.Item
-          name="parents_phonenumber"
-          label="Parents Phone Number"
+          label={
+            <span>
+              Username <span className="text-red-500">*</span>
+            </span>
+          }
+          className="w-full modern-form-item"
           rules={[
-            { required: true, message: "Parents Phone Number is required" },
+            { required: true, message: "Username is required" },
+            { min: 3, message: "Username must be at least 3 characters" }
           ]}
         >
-          <PhoneInputWrapper placeholder="Phone Number" />
-        </Form.Item> */}
-
+          <Input placeholder="Choose a username" size="large" />
+        </Form.Item>
+        
         <Form.Item
-          name="student_type"
-          label="Class Type"
-          rules={[{ required: true, message: "Class Type is required" }]}
+          rules={[
+            { type: "email", message: "Please enter a valid email address" }
+          ]}
+          label={
+            <span>
+              Email <span className="text-gray-400 text-xs">(Optional)</span>
+            </span>
+          }
+          name="email"
+          className="w-full modern-form-item"
         >
-          <Select
-            optionFilterProp="label"
-            options={enumToLabelValueArray(StudentType)}
-            placeholder="Student Type"
-          />
+          <Input type="email" placeholder="your.email@example.com" size="large" />
         </Form.Item>
 
+        <Form.Item 
+          name="phone_number" 
+          label={
+            <span>
+              Phone Number <span className="text-gray-400 text-xs">(Optional)</span>
+            </span>
+          } 
+          className="w-full modern-form-item"
+        >
+          <PhoneInputWrapper placeholder="Enter your phone number" />
+        </Form.Item>
+        </div>
+      </div>
+
+      {/* Academic Information Section */}
+      {is_client && (
+        <div className="form-section mt-8">
+          <h3 className="form-section__title">Academic Information</h3>
+          <p className="form-section__subtitle">Tell us about your academic background</p>
+        </div>
+      )}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <Form.Item
+            name="institution"
+            label={
+              <span>
+                Institution <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "Institution is required" }]}
+          >
+            <InstitutionSearchInput placeholder="Select institution" detail={data?.institution_detail} />
+          </Form.Item>
+
+          <Form.Item
+            name="grade"
+            label={
+              <span>
+                Grade <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "Grade is required" }]}
+          >
+            <Input placeholder="Enter your grade" size="large" />
+          </Form.Item>
+
+          <Form.Item
+            name="student_type"
+            label={
+              <span>
+                Class Type <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "Class Type is required" }]}
+          >
+            <Select
+              size="large"
+              showSearch
+              allowClear
+              optionFilterProp="label"
+              options={enumToLabelValueArray(StudentType)}
+              placeholder="Select class type"
+            />
+          </Form.Item>
+        </div>
+      </div>
+
+      {/* Location Information Section */}
+      {is_client && (
+        <div className="form-section mt-8">
+          <h3 className="form-section__title">Location Information</h3>
+          <p className="form-section__subtitle">Where are you located?</p>
+        </div>
+      )}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <Form.Item
+            name="region"
+            label={
+              <span>
+                Region <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "Region is required" }]}
+          >
+            <RegionSearchInput placeholder="Select region" detail={data?.region_detail} />
+          </Form.Item>
+
+          <Form.Item
+            name="city"
+            label={
+              <span>
+                City <span className="text-red-500">*</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+            rules={[{ required: true, message: "City is required" }]}
+          >
+            <CitySearchInput placeholder="Select city" region={region} detail={data?.city_detail} />
+          </Form.Item>
+
+          <Form.Item
+            name="woreda"
+            label={
+              <span>
+                Woreda <span className="text-gray-400 text-xs">(Optional)</span>
+              </span>
+            }
+            className="w-full modern-form-item"
+          >
+            <Input placeholder="Enter woreda" size="large" />
+          </Form.Item>
+        </div>
+      </div>
+
+      {/* Business Information Section (Optional) */}
+      {is_client && (
+        <div className="form-section mt-8">
+          <h3 className="form-section__title">
+            Business Information 
+            <span className="text-gray-400 text-xs font-normal ml-2">(Optional)</span>
+          </h3>
+          <p className="form-section__subtitle">Only fill this if applicable for business purposes</p>
+        </div>
+      )}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         <Form.Item
           name="tin_no"
-          label="TIN No"
+          label={
+            <span>
+              TIN Number <span className="text-gray-400 text-xs">(Optional)</span>
+            </span>
+          }
+          className="w-full modern-form-item"
         >
-          <Input />
+          <Input placeholder="Enter TIN number" size="large" />
         </Form.Item>
 
         <Form.Item
           name="vat_reg_no"
-          label="VAT Reg Number"
+          label={
+            <span>
+              VAT Registration Number <span className="text-gray-400 text-xs">(Optional)</span>
+            </span>
+          }
+          className="w-full modern-form-item"
         >
-          <Input />
+          <Input placeholder="Enter VAT registration number" size="large" />
         </Form.Item>
 
         <Form.Item
           name="vat_reg_date"
-          label="VAT Reg Date"
+          label={
+            <span>
+              VAT Registration Date <span className="text-gray-400 text-xs">(Optional)</span>
+            </span>
+          }
+          className="w-full modern-form-item"
         >
-          <DatePicker />
+          <DatePicker size="large" className="w-full" placeholder="Select date" />
         </Form.Item>
-
-        {/* <Form.Item
-          name="institution"
-          label="Institution"
-          rules={[{ required: true, message: "Institution is required" }]}
-        >
-          <InstitutionSearchInput detail={data?.institution_detail} />
-        </Form.Item> */}
+        </div>
       </div>
-      {/* {is_client ? (
-        <Form.Item>
-          <Button htmlType="submit" type="primary" loading={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      ) : (
-        <></>
-      )} */}
     </Form>
   );
 };

@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from difflib import SequenceMatcher
 from django.contrib.auth.password_validation import validate_password
+from django.conf import settings
+import os
 
 
-default_password = "12qwaszxzxasqw12"
+default_password = os.environ.get('DEFAULT_PASSWORD', '12qwaszxzxasqw12')
 
 def validate_password2(obj,value):
     if value != (obj.context.get('request').data.get('password1') or default_password):

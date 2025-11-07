@@ -1,10 +1,10 @@
 import requests
 from finance.enums import PaymentStatus
 from finance.models import Payment
-from take_the_stage.settings import CHAPA_SECRET_KEY, CHAPA_CALLBACK_URL
+from take_the_stage.settings import CHAPA_SECRET_KEY, CHAPA_CALLBACK_URL, CHAPA_API_URL
 from django.utils import timezone
 
-accept_url = "https://api.chapa.co/v1/transaction/initialize"
+accept_url = f"{CHAPA_API_URL}/transaction/initialize"
 headers = {
     'Authorization': f'Bearer {CHAPA_SECRET_KEY}',
     'Content-Type': 'application/json'
@@ -83,7 +83,7 @@ def _initialize_chapa_payment(payment, user, amount, title, description, return_
 
 
 def verifyPayment(tx_ref):
-    url = f"https://api.chapa.co/v1/transaction/verify/{tx_ref}"
+    url = f"{CHAPA_API_URL}/transaction/verify/{tx_ref}"
 
     response = requests.get(url, headers=headers)
 

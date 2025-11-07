@@ -199,3 +199,269 @@ html {
 .animate-slide-in-right {
   animation: slideInRight 0.6s ease-out;
 }
+
+/* Modern Form Styles */
+.modern-form .form-section {
+  margin-bottom: 2rem;
+}
+
+.modern-form .form-section__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modern-form .form-section__subtitle {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0;
+}
+
+.modern-form .modern-form-item {
+  margin-bottom: 1.5rem;
+}
+
+.modern-form .modern-form-item .ant-form-item-label {
+  padding-bottom: 0.5rem;
+}
+
+.modern-form .modern-form-item .ant-form-item-label label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+}
+
+.modern-form .modern-form-item .ant-input,
+.modern-form .modern-form-item .ant-select-selector,
+.modern-form .modern-form-item .ant-picker {
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--gray-300);
+  transition: all var(--transition-base);
+}
+
+.modern-form .modern-form-item .ant-input:hover,
+.modern-form .modern-form-item .ant-select-selector:hover,
+.modern-form .modern-form-item .ant-picker:hover {
+  border-color: var(--primary);
+}
+
+.modern-form .modern-form-item .ant-input:focus,
+.modern-form .modern-form-item .ant-input.ant-input-focused,
+.modern-form .modern-form-item .ant-select-focused .ant-select-selector,
+.modern-form .modern-form-item .ant-picker-focused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modern-form .modern-form-item .ant-input-lg,
+.modern-form .modern-form-item .ant-select-lg .ant-select-selector,
+.modern-form .modern-form-item .ant-picker-large {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.modern-form .modern-form-item .ant-form-item-explain-error {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--error);
+}
+
+.modern-form .ant-upload .ant-btn {
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--gray-300);
+  transition: all var(--transition-base);
+}
+
+.modern-form .ant-upload .ant-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.modern-form .ant-btn-primary {
+  background: var(--gradient-blue);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  height: auto;
+  transition: all var(--transition-base);
+}
+
+.modern-form .ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Registration Container Styles */
+.registration-container {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+  box-shadow: var(--shadow-lg);
+  margin: 1rem auto;
+  max-width: 1200px;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .registration-container {
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .registration-container {
+    padding: 2.5rem;
+    margin: 2rem auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .registration-container {
+    padding: 3rem;
+  }
+}
+
+.registration-container .ant-form-item:last-child {
+  margin-bottom: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.registration-container .ant-form-item:last-child .ant-btn {
+  min-width: 150px;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  height: auto;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .registration-container .ant-form-item:last-child .ant-btn {
+    width: auto;
+  }
+}
+
+/* Enhanced Modern Form Card Styles */
+.modern-form .bg-white {
+  transition: all var(--transition-base);
+}
+
+.modern-form .bg-white:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Improved form section titles */
+.modern-form .form-section__title {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.modern-form .form-section__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background: var(--gradient-blue);
+  border-radius: var(--radius-full);
+}
+
+/* Better spacing for form sections */
+.modern-form .form-section {
+  margin-bottom: 1.5rem;
+}
+
+.modern-form .form-section:first-child {
+  margin-top: 0;
+}
+
+/* Enhanced select dropdown styling */
+.modern-form .ant-select-selector {
+  transition: all var(--transition-base) !important;
+}
+
+.modern-form .ant-select:hover .ant-select-selector {
+  border-color: var(--primary) !important;
+}
+
+.modern-form .ant-select-focused .ant-select-selector {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Better input focus states */
+.modern-form .ant-input:focus,
+.modern-form .ant-input-focused {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Improved date picker styling */
+.modern-form .ant-picker:hover {
+  border-color: var(--primary) !important;
+}
+
+.modern-form .ant-picker-focused {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Better upload button styling */
+.modern-form .ant-upload .ant-btn {
+  border: 1.5px dashed var(--gray-300) !important;
+  background: var(--gray-50) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.modern-form .ant-upload .ant-btn:hover {
+  border-color: var(--primary) !important;
+  background: rgba(59, 130, 246, 0.05) !important;
+  color: var(--primary) !important;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .modern-form .bg-white {
+    padding: 1rem !important;
+  }
+  
+  .modern-form .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Ensure form fields are always interactive */
+.modern-form .ant-input,
+.modern-form .ant-select,
+.modern-form .ant-picker,
+.modern-form .ant-upload,
+.modern-form input,
+.modern-form select,
+.modern-form textarea {
+  pointer-events: auto !important;
+  cursor: text !important;
+}
+
+.modern-form .ant-select:not(.ant-select-disabled) {
+  cursor: pointer !important;
+}
+
+.modern-form .ant-select-disabled {
+  cursor: not-allowed !important;
+}
+
+.modern-form .ant-picker {
+  cursor: pointer !important;
+}
+
+.modern-form .ant-upload {
+  cursor: pointer !important;
+}

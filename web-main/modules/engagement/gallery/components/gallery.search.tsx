@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import { Select } from "antd";
 import type { SelectProps } from "antd";
-import useGalleryService from "../gallery.service";
+import { Select } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
 import { Gallery } from "../gallery.model";
+import useGalleryService from "../gallery.service";
 
 let timeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -44,6 +44,11 @@ const GallerySearchInput: React.FC<SearchInputProps> = ({
             }));
             setOptions(formatted);
           }
+        })
+        .catch((error) => {
+          // Handle network errors gracefully
+          console.error("Error fetching gallery:", error);
+          // Don't update options on error, keep existing options
         });
     };
 

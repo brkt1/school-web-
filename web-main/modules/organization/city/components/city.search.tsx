@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Select, Spin } from "antd";
 import type { SelectProps } from "antd";
-import useCityService from "../city.service";
+import { Select, Spin } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { City } from "../city.model";
+import useCityService from "../city.service";
 
 interface SearchInputProps
   extends Omit<SelectProps<number>, "options" | "onSearch"> {
@@ -57,6 +57,25 @@ const CitySearchInput: React.FC<SearchInputProps> = ({
         });
 
         setHasMore(!!next);
+      } catch (error: any) {
+        // Suppress common API errors - backend issues, missing endpoints, or CORS
+        const shouldSuppress = 
+          error?.code === 'ECONNREFUSED' || 
+          error?.code === 'ERR_NETWORK' ||
+          error?.code === 'ERR_BAD_REQUEST' ||
+          error?.response?.status === 404 ||
+          error?.message?.includes('ECONNREFUSED') ||
+          error?.message?.includes('connect') ||
+          error?.message?.includes('404') ||
+          error?.message?.includes('CORS');
+        
+        if (!shouldSuppress) {
+          console.error("Error fetching cities:", error);
+        }
+        // Don't update options on error, keep existing options
+        if (!append) {
+          setOptions([]);
+        }
       } finally {
         setLoading(false);
       }
@@ -95,6 +114,19 @@ const CitySearchInput: React.FC<SearchInputProps> = ({
     setSearchTerm(value);
   }, []);
 
+  // Load initial data on mount or when region changes
+  useEffect(() => {
+    if (region) {
+      currentPageRef.current = 1;
+      setHasMore(true);
+      setOptions([]);
+      fetchData("", 1);
+    } else {
+      setOptions([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region]);
+
   useEffect(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -117,17 +149,20 @@ const CitySearchInput: React.FC<SearchInputProps> = ({
   return (
     <Select
       showSearch
+      size="large"
       value={value}
       placeholder={placeholder}
       defaultActiveFirstOption={false}
       suffixIcon={loading ? <Spin size="small" /> : undefined}
       filterOption={false}
-      notFoundContent={loading ? <Spin size="small" /> : "No results found"}
+      notFoundContent={loading ? <Spin size="small" /> : !region ? "Please select a region first" : !options || options.length === 0 ? "Start typing to search..." : "No results found"}
       onSearch={handleSearch}
       onPopupScroll={handlePopupScroll}
       onChange={onChange}
       options={options}
       loading={loading}
+      disabled={!region}
+      allowClear
       {...restProps}
     />
   );

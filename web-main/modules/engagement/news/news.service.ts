@@ -1,13 +1,13 @@
-import { useMemo } from "react";
 import useApi from "@/utils/api/api";
-import { News } from "./news.model";
 import { FetchedApi } from "@/utils/common_models/commons.model";
+import { useMemo } from "react";
+import { News } from "./news.model";
 
-import { getRequestParams } from "@/utils/table/table.utils";
 import { TableParams } from "@/utils/table/table.model";
+import { getRequestParams } from "@/utils/table/table.utils";
 import axios from "axios";
 
-const host = process.env.NEXT_PUBLIC_BASE_URL;
+const host = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
 
 export const getNewsServer = async (params: TableParams) => {
   const requestParams = getRequestParams(params);

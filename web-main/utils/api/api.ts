@@ -1,22 +1,42 @@
 "use client";
+import { RefreshToken } from "@/modules/auth/authorize/authorize.model";
+import { removeUser } from "@/store/slices/userSlices";
+import { message } from "antd";
 import axios, {
   AxiosError,
   AxiosInstance,
   InternalAxiosRequestConfig,
 } from "axios";
-import { message } from "antd";
-import useHandleError, { ApiErrorModel } from "./handleError";
-import { useDispatch } from "react-redux";
-import { removeUser } from "@/store/slices/userSlices";
-import { RefreshToken } from "@/modules/auth/authorize/authorize.model";
-import qs from "qs";
 import { usePathname, useRouter } from "next/navigation";
+import qs from "qs";
 import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import useHandleError, { ApiErrorModel } from "./handleError";
 
-export const host = process.env.NEXT_PUBLIC_BASE_URL;
+// Use proxy path in browser to avoid CORS, use full URL for server-side
+const getHost = () => {
+  const envHost = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+  
+  // In browser, use relative /api path which will be proxied by Next.js
+  // This avoids CORS issues since requests appear to come from same origin
+  if (typeof window !== "undefined") {
+    return "/api";
+  }
+  
+  // Server-side or when explicitly set, use full URL
+  return envHost;
+};
 
-export const tokenKey = `${host}.token.authorizationData`;
-export const refreshKey = `${host}.refresh.authorizationData`;
+export const host = getHost();
+
+// Use consistent key for localStorage regardless of proxy
+const getStorageKey = () => {
+  const envHost = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+  return envHost;
+};
+
+export const tokenKey = `${getStorageKey()}.token.authorizationData`;
+export const refreshKey = `${getStorageKey()}.refresh.authorizationData`;
 
 const useApi = (module: string) => {
   const handleError = useHandleError();
@@ -51,8 +71,10 @@ const useApi = (module: string) => {
   };
 
   const api = useMemo(() => {
+    // Ensure baseURL is properly formatted (remove trailing slash from host, add before module)
+    const baseURL = host?.replace(/\/+$/, '') + `/${module}`;
     const instance = axios.create({
-      baseURL: `${host}/${module}`,
+      baseURL,
       headers: {
         "Content-Type": "application/json",
       },
@@ -113,6 +135,7 @@ const useApi = (module: string) => {
     if (typeof window !== "undefined") {
       const refresh = localStorage.getItem(refreshKey);
       if (!refresh) return false;
+      // Use host variable which will be "/api" in browser (proxied) or full URL on server
       return await axios.post<RefreshToken>(`${host}/commons/authorize/token/refresh/`, {
         refresh,
       });

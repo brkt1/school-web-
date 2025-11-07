@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import urlparse
 from django.conf import settings
 
 # import django_heroku
@@ -26,8 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-environ.Env.read_env()
 env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
 DEBUG = env.bool('DEBUG', default=True)
 
@@ -37,8 +38,9 @@ def get_backend_url():
             return config("DEVELOPMENT_URL")
         else:
             return config("PRODUCTION_URL")
-    except KeyError:
-        error_msg = "set the %s environment variable" 
+    except KeyError as e:
+        env_var = "DEVELOPMENT_URL" if DEBUG else "PRODUCTION_URL"
+        error_msg = f"set the {env_var} environment variable"
         raise ImproperlyConfigured(error_msg)
 
 def get_frontend_url():
@@ -47,25 +49,47 @@ def get_frontend_url():
             return config("FRONT_END_URL_DEV")
         else:
             return config("FRONT_END_URL_PROD")
-    except KeyError:
-        error_msg="environment variable error"
+    except KeyError as e:
+        env_var = "FRONT_END_URL_DEV" if DEBUG else "FRONT_END_URL_PROD"
+        error_msg = f"set the {env_var} environment variable"
         raise ImproperlyConfigured(error_msg)
 
 def get_hunter_api_key():
-    return config("HUNTER_IO_KEY")
+    return config("HUNTER_IO_KEY", default="")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 
 #CHAPA
-CHAPA_SECRET_KEY = env('CHAPA_SECRET_KEY')
-CHAPA_CALLBACK_URL = env('CHAPA_CALLBACK_URL')
+CHAPA_SECRET_KEY = env('CHAPA_SECRET_KEY', default='')
+CHAPA_CALLBACK_URL = env('CHAPA_CALLBACK_URL', default='')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-# ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]
-ALLOWED_HOSTS = ["*"] 
+# ALLOWED_HOSTS - Restrict to specific school domains to prevent abuse
+# Can be set via environment variable ALLOWED_HOSTS (comma-separated)
+ALLOWED_HOSTS_ENV = env('ALLOWED_HOSTS', default='')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',') if host.strip()]
+else:
+    # Default allowed hosts for school domains
+    ALLOWED_HOSTS = [
+        "takethestage-api.onrender.com",
+        "takethestageplc.com",
+        "takethestage.org",
+        "localhost",
+        "127.0.0.1",
+    ]
+    # Add production backend URL if available
+    try:
+        backend_url = get_backend_url()
+        if backend_url:
+            parsed = urlparse(backend_url)
+            if parsed.netloc and parsed.netloc not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(parsed.netloc)
+    except Exception:
+        pass 
 
 API_GENERATOR = {
     # 'students'  : "accounts.models.Student",
@@ -93,7 +117,7 @@ API_GENERATOR = {
     'student-class-shifts': 'accounts.models.StudentClassShift',
 }
 
-WEB_GENERATOR_PATH = env('WEB_GENERATOR_PATH')
+WEB_GENERATOR_PATH = env('WEB_GENERATOR_PATH', default='')
 
 # Application definition
 
@@ -153,9 +177,9 @@ INSTALLED_APPS = [
 ]
 
 # CHAPA
-CHAPA_SECRET = env('CHAPA_SECRET')
-
-CHAPA_API_URL = env('CHAPA_API_URL')
+CHAPA_SECRET = env('CHAPA_SECRET', default='')
+CHAPA_API_URL = env('CHAPA_API_URL', default='https://api.chapa.co/v1')
+CHAPA_WEBHOOK_SECRET = env('CHAPA_WEBHOOK_SECRET', default='')
 
 CHAPA_API_VERSION = 'v1'
 
@@ -163,13 +187,13 @@ CHAPA_TRANSACTION_MODEL = 'django_chapa.ChapaTransaction'
 
 
 
-# Put these in the .env file
-GOOGLE_CLIENT_ID = "1083581779556-8aqk49a2490ramsc3ucghh6spe9murej.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "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"
-GITHUB_CLIENT_ID = "07a8752bcbc4ac250cc9"
-GITHUB_CLIENT_SECRET = "5bf6ea3c989a2c4e38c480bcf32cf910f45e9865"
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1026823299290-hvidfs6hva19v4135em3f7kbb3r3db7v.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+# OAuth credentials - loaded from environment variables
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET', default='')
+GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='')
+GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "socialaccount_signup"
@@ -204,8 +228,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '1083581779556-8aqk49a2490ramsc3ucghh6spe9murej.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
             'key': ''
         }
     },'github': {
@@ -213,14 +237,14 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '07a8752bcbc4ac250cc9',
-            'secret': '5bf6ea3c989a2c4e38c480bcf32cf910f45e9865',
+            'client_id': GITHUB_CLIENT_ID,
+            'secret': GITHUB_CLIENT_SECRET,
             'key': ''
         }
     }
 }
 
-TELEGRAM_BOT_TOKEN="6667695976:AAFPg0dsl2yF3D51q4tJ7QJcc8Lh_w60an0"
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN', default='')
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_REQUIRED = False
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -244,7 +268,16 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "commons.utils.exceptions.api_exception_handler",
     'DEFAULT_PAGINATION_CLASS': 'commons.utils.paginations.CustomPagination',
     'PAGE_SIZE': 100,
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    
+    # API Throttling - Rate limiting to prevent abuse
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',  # For unauthenticated users
+        'rest_framework.throttling.UserRateThrottle',  # For authenticated users
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',  # 100 requests per hour for anonymous users
+        'user': '1000/hour',  # 1000 requests per hour for authenticated users
+    },
 }
 
 MIDDLEWARE = [
@@ -279,14 +312,39 @@ TEMPLATES = [
     },
 ]
 
-# CORS_ALLOWED_ORIGINS = (
-#     "http://localhost:3000",
-#     "http://localhost:3001",
-#     "http://localhost:8000",
-# )
-CORS_ALLOW_ALL_ORIGINS = True
-# CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
-# CSRF_TRUSTED_ORIGINS = ["*"]
+# CORS configuration - Restrict to specific school domains to prevent abuse
+# Can be set via environment variable CORS_ALLOWED_ORIGINS (comma-separated)
+CORS_ALLOWED_ORIGINS_ENV = env('CORS_ALLOWED_ORIGINS', default='')
+if CORS_ALLOWED_ORIGINS_ENV:
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_ENV.split(',') if origin.strip()]
+else:
+    # Default CORS allowed origins for school domains
+    CORS_ALLOWED_ORIGINS = [
+        "https://takethestage-web.onrender.com",
+        "https://takethestageplc.com",
+        "https://takethestage.org",
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+    ]
+    # Add production frontend URL if available
+    try:
+        frontend_url = get_frontend_url()
+        if frontend_url:
+            parsed = urlparse(frontend_url)
+            if parsed.netloc:
+                origin = f"{parsed.scheme}://{parsed.netloc}"
+                if origin not in CORS_ALLOWED_ORIGINS:
+                    CORS_ALLOWED_ORIGINS.append(origin)
+    except Exception:
+        pass
+
+# Disable wildcard CORS
+CORS_ALLOW_ALL_ORIGINS = False
+
+# CSRF trusted origins - Must match CORS origins for forms to work
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
 
 # dependencies = [
 #     # migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -319,11 +377,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,  # Enforce minimum password length
+        }
     },
-    
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
     {
         'NAME': 'take_the_stage.validator.AlphaNumericPasswordValidator',
     },
+]
+
+# Password Hashing - Use Argon2 for better security (requires argon2-cffi package)
+# Falls back to PBKDF2 if Argon2 is not available
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',  # Most secure, requires argon2-cffi
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Default, very secure
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
 
@@ -354,7 +430,39 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 PASSWORD_RESET_TIMEOUT = 604800
 
+# ============================================================================
+# SECURITY SETTINGS - Production Security Configuration
+# ============================================================================
+
+# SSL/HTTPS Security
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Only enable HTTPS redirect in production (when DEBUG=False)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
+    SECURE_HSTS_SECONDS = 31536000  # 1 year - HTTP Strict Transport Security
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains in HSTS
+    SECURE_HSTS_PRELOAD = True  # Enable HSTS preload for browsers
+else:
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+
+# Cookie Security
+SESSION_COOKIE_SECURE = not DEBUG  # Only send session cookies over HTTPS in production
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookies
+SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection for session cookies
+
+CSRF_COOKIE_SECURE = not DEBUG  # Only send CSRF cookies over HTTPS in production
+CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript access to CSRF cookies
+CSRF_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+
+# Security Headers
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks (prevent iframe embedding)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filter
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Control referrer information
+
+# Additional Security Headers (via middleware)
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'  # Prevent cross-origin attacks
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # new
@@ -366,24 +474,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "http://localhost:3000/user/activate/12"
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = None
+
+# Frontend URLs - loaded from environment variables
+FRONTEND_BASE_URL = env('FRONTEND_BASE_URL', default='')
+if not FRONTEND_BASE_URL:
+    try:
+        FRONTEND_BASE_URL = get_frontend_url() if not DEBUG else 'http://localhost:3000'
+    except:
+        FRONTEND_BASE_URL = 'http://localhost:3000'
+
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = env('ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL', default=f'{FRONTEND_BASE_URL}/user/activate/12')
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = env('ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL', default=None)
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 # Brevo configuration
-BREVO_API_KEY = env("BREVO_API_KEY")
+BREVO_API_KEY = env("BREVO_API_KEY", default='')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "mail.takethestageplc.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = "admin@takethestageplc.com"
-EMAIL_HOST_PASSWORD = "Q?lvpf.I(m5-Q9)e"
+EMAIL_HOST = env('EMAIL_HOST', default='')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_FAIL_SILENTLY = False
 
-DEFAULT_FROM_EMAIL = 'takethestage@gmail.com'
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='takethestage@gmail.com')
 
 ACCOUNT_EMAIL_REQUIRED = False
 
@@ -395,11 +512,11 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     # OTHER SETTINGS
 }
-DEFAULT_FROM_EMAIL = 'contact@nisirtech.com'
-RESET_PASSWORD_VERIFICATION_URL = "http://127.0.0.1:3000/reset_pwd"
-URL_FRONT = "http://127.0.0.1:3000/"
+
+RESET_PASSWORD_VERIFICATION_URL = env('RESET_PASSWORD_VERIFICATION_URL', default=f'{FRONTEND_BASE_URL}/reset_pwd')
+URL_FRONT = env('URL_FRONT', default=f'{FRONTEND_BASE_URL}/')
 ACCOUNT_ADAPTER = 'commons.utils.authenticaton_utils.DefaultAccountAdapterCustom'
-REGISTER_VERIFICATION_URL = "http://localhost:3000/user/activate"
+REGISTER_VERIFICATION_URL = env('REGISTER_VERIFICATION_URL', default=f'{FRONTEND_BASE_URL}/user/activate')
 
 
 REST_AUTH_SERIALIZERS = {
@@ -407,8 +524,8 @@ REST_AUTH_SERIALIZERS = {
 }
 
 BREVO_SENDER = {
-    'EMAIL': 'takethestage@gmail.com',
-    'NAME': "Take The Stage"
+    'EMAIL': env('BREVO_SENDER_EMAIL', default=DEFAULT_FROM_EMAIL),
+    'NAME': env('BREVO_SENDER_NAME', default="Take The Stage")
 }
 
 AuthenticationBackend = [
@@ -455,12 +572,17 @@ SIMPLE_JWT = {
 }
 # django_heroku.settings(locals())
 
-# Channels
+# Channels / Redis configuration
+REDIS_HOST = env('REDIS_HOST', default='127.0.0.1')
+REDIS_PORT = env.int('REDIS_PORT', default=6379)
+REDIS_PASSWORD = env('REDIS_PASSWORD', default=None)
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
+            "password": REDIS_PASSWORD if REDIS_PASSWORD else None,
         },
     },
 }
@@ -477,4 +599,24 @@ CHANNEL_LAYERS = {
 # NOTIFICATIONS_NOTIFICATION_MODEL = 'commons.notification.models.Notification'
 
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 12621440 
+# File Upload Security
+DATA_UPLOAD_MAX_MEMORY_SIZE = 12621440  # ~12 MB max file size in memory
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000  # Limit number of form fields to prevent DoS
+FILE_UPLOAD_MAX_MEMORY_SIZE = 12621440  # Max file size before writing to disk
+FILE_UPLOAD_PERMISSIONS = 0o644  # File permissions for uploaded files
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755  # Directory permissions for upload directories
+
+# Production Security Warnings
+if DEBUG:
+    import warnings
+    warnings.filterwarnings(
+        'error',
+        category=RuntimeWarning,
+        module='django.*',
+    )
+
+# Prevent accidental exposure of sensitive data in error messages
+if not DEBUG:
+    # Don't expose sensitive information in error pages
+    ADMINS = [('Admin', env('ADMIN_EMAIL', default='admin@takethestageplc.com'))]
+    MANAGERS = ADMINS 

@@ -8,88 +8,104 @@ import logo from "../../../../assets/footer/footer-logo.png";
 import SocialIcons from "./SocialIcons";
 
 export const AppFooter = () => {
-  const menuItems = [
-    {
-      key: 'home',
-      label: <Link className="app-header__menu-item" href="/">Home</Link>,
-    },
-    {
-      key: 'about',
-      label: <Link className="app-header__menu-item" href="/about">About US</Link>,
-    },
-    {
-      key: 'news',
-      label: <Link className="app-header__menu-item" href="/#news">LATEST News</Link>,
-    },
-    {
-      key: 'pricing',
-      label: <Link className="app-header__menu-item" href="/pricing">Pricing</Link>,
-    },
-    {
-      key: 'testimonials',
-      label: <Link className="app-header__menu-item" href="/testimonials">Testimonials</Link>,
-    },
-    {
-      key: 'blog',
-      label: <Link className="app-header__menu-item" href="/blog">Blog</Link>,
-    },
-    {
-      key: 'contact',
-      label: <Link className="app-header__menu-item" href="/contact">Contact US</Link>,
-    },
-    {
-      key: 'registeration',
-      label: <Link className="app-header__menu-item" href="/#registeration">Registeration</Link>,
-    },
-    {
-      key: 'login',
-      label: <Link className="app-header__menu-item" href="/login">Login</Link>,
-    },
+  const quickLinks = [
+    { key: 'home', label: 'Home', href: '/' },
+    { key: 'about', label: 'About Us', href: '/about' },
+    { key: 'pricing', label: 'Pricing', href: '/pricing' },
+    { key: 'contact', label: 'Contact', href: '/contact' },
+  ];
+
+  const resources = [
+    { key: 'news', label: 'Latest News', href: '/#news' },
+    { key: 'blog', label: 'Blog', href: '/blog' },
+    { key: 'testimonials', label: 'Testimonials', href: '/testimonials' },
+    { key: 'registeration', label: 'Registration', href: '/#registeration' },
+  ];
+
+  const account = [
+    { key: 'login', label: 'Login', href: '/login' },
+    { key: 'register-student', label: 'Register as Student', href: '/register/student' },
   ];
 
   return (
     <Footer className="app-footer-modern">
       <div className="app-footer__container">
-        {/* Logo and Social Section */}
-        <div className="app-footer__top">
-          <div className="app-footer__logo-section">
+        {/* Main Footer Content */}
+        <div className="app-footer__main">
+          {/* Brand Section */}
+          <div className="app-footer__brand">
             <Image
               src={logo}
               alt="Take The Stage Logo"
               width={180}
               height={60}
               className="app-footer__logo"
+              style={{ width: "auto" }}
             />
             <p className="app-footer__tagline">SPEAK LIKE A LEADER</p>
-          </div>
-          <div className="app-footer__social">
-            <SocialIcons />
-          </div>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="app-footer__nav">
-          {menuItems.map((link) => (
-            <div key={link.key} className="app-footer__nav-item">
-              {link.label}
+            <p className="app-footer__description">
+              Empowering individuals to communicate with confidence and lead with impact.
+            </p>
+            <div className="app-footer__social">
+              <SocialIcons />
             </div>
-          ))}
+          </div>
+
+          {/* Quick Links */}
+          <div className="app-footer__column">
+            <h3 className="app-footer__column-title">Quick Links</h3>
+            <ul className="app-footer__links">
+              {quickLinks.map((link) => (
+                <li key={link.key}>
+                  <Link href={link.href} className="app-footer__link">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div className="app-footer__column">
+            <h3 className="app-footer__column-title">Resources</h3>
+            <ul className="app-footer__links">
+              {resources.map((link) => (
+                <li key={link.key}>
+                  <Link href={link.href} className="app-footer__link">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Account */}
+          <div className="app-footer__column">
+            <h3 className="app-footer__column-title">Account</h3>
+            <ul className="app-footer__links">
+              {account.map((link) => (
+                <li key={link.key}>
+                  <Link href={link.href} className="app-footer__link">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* Back to Top Button */}
-        <div className="app-footer__back-to-top">
+        {/* Bottom Section */}
+        <div className="app-footer__bottom">
+          <div className="app-footer__copyright">
+            <p>© {new Date().getFullYear()} Take the Stage PLC. All rights reserved.</p>
+          </div>
           <a
             href="#top"
-            className="app-footer__back-to-top-link"
+            className="app-footer__back-to-top"
+            aria-label="Back to top"
           >
             <ArrowUpOutlined className="app-footer__back-to-top-icon" />
-            <span>Back to Top</span>
           </a>
-        </div>
-
-        {/* Copyright */}
-        <div className="app-footer__copyright">
-          <p>© {new Date().getFullYear()} Take the Stage PLC. All rights reserved.</p>
         </div>
       </div>
     </Footer>

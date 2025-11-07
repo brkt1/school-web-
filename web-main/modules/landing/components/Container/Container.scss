@@ -10,10 +10,16 @@
   max-width: none !important;
 }
 
-/* Mobile view: half the padding */
+/* Mobile view: responsive padding */
+@media (max-width: 480px) {
+  .custom-container {
+    padding: 2rem 10px;
+  }
+}
+
 @media (max-width: 767px) {
   .custom-container {
-    padding: 1.5rem 7.5px; /* half of 7rem and 15px */
+    padding: 3rem 12px;
   }
 }
 

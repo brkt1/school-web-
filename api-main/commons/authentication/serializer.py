@@ -6,7 +6,7 @@ from django.db import transaction
 from commons.multi_languages.models import Language
 from commons.multi_languages.serializer import LanguageSerializer
 from .models import CustomUser, CustomUser_Groups, Group, UserPermission, GroupPermission, EducationalBackground,Experience, ToBeInstructorRequest
-from .validator import validate_password1, validate_password2
+from .validator import validate_password1, validate_password2, default_password
 import json
 from ..utils.email_utils import send
 from commons.utils.enums import GenderType
@@ -75,8 +75,8 @@ class CustomRegisterSerializer(RegisterSerializer):
     is_staff = serializers.BooleanField(default=False)
     is_superuser = serializers.BooleanField(default=False)
     bio = serializers.CharField(max_length=3000, default="")
-    password1 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
-    password2 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
+    password1 = serializers.CharField(write_only=True, default=default_password)
+    password2 = serializers.CharField(write_only=True, default=default_password)
     groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), many=True, required=False)
     student = serializers.SerializerMethodField()
 
@@ -133,8 +133,8 @@ class CustomUserRegistrationSerializer(RegisterSerializer):
     first_name = serializers.CharField(max_length=200)
     middle_name = serializers.CharField(max_length=200)
     last_name = serializers.CharField(max_length=200, default="")
-    password1 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
-    password2 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
+    password1 = serializers.CharField(write_only=True, default=default_password)
+    password2 = serializers.CharField(write_only=True, default=default_password)
     username = serializers.CharField(read_only=True)
 
     def validate_password2(self, value):
@@ -187,8 +187,8 @@ class CustomSignUpRegistrationSerializer(RegisterSerializer):
     gender = serializers.IntegerField()
     # profile_pic = serializers.UUIDField(write_only=True, required=False, allow_null=True)
     bio = serializers.CharField(max_length=3000, default="")
-    password1 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
-    password2 = serializers.CharField(write_only=True, default="12qwaszxzxasqw12")
+    password1 = serializers.CharField(write_only=True, default=default_password)
+    password2 = serializers.CharField(write_only=True, default=default_password)
 
     def validate_password2(self, value):
         return validate_password2(self, value)

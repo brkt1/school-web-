@@ -15,7 +15,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Rust (required for kolo package)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install Python dependencies
 COPY requirements.txt .
@@ -38,8 +43,8 @@ echo "Collecting static files..."\n\
 python manage.py collectstatic --noinput || echo "Static collection skipped"\n\
 echo "Running migrations..."\n\
 python manage.py migrate || echo "Migration error - check logs"\n\
-echo "Starting server on 0.0.0.0:8000..."\n\
-exec python manage.py runserver 0.0.0.0:8000\n' > /app/start.sh && \
+echo "Starting Gunicorn server on 0.0.0.0:8000..."\n\
+exec gunicorn take_the_stage.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120 --access-logfile - --error-logfile -\n' > /app/start.sh && \
     chmod +x /app/start.sh
 
 # Run startup script
